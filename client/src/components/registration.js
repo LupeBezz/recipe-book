@@ -6,29 +6,34 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the Login component
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the Registration component
 
-function Login() {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
+function Registration() {
+    // const [email, setEmail] = useState();
+    // const [password, setPassword] = useState();
     const [errorMessage, setErrorMessage] = useState();
 
+    const firstRef = useRef();
+    const lastRef = useRef();
     const emailRef = useRef();
     const passwordRef = useRef();
 
-    const handleLogin = (e) => {
+    const handleRegistration = (e) => {
         e.preventDefault();
+        setErrorMessage("");
+        console.log(firstRef.current.value);
+        console.log(lastRef.current.value);
         console.log(emailRef.current.value);
         console.log(passwordRef.current.value);
-        // setEmail(emailRef.current.value);
-        // setPassword(passwordRef.current.value);
 
         const userData = {
+            first: firstRef.current.value,
+            last: lastRef.current.value,
             email: emailRef.current.value,
             password: passwordRef.current.value,
         };
         //console.log("userData: ", userData);
-        fetch("/api/login", {
+        fetch("/api/registration", {
             method: "post",
             headers: {
                 "Content-Type": "application/json",
@@ -41,51 +46,61 @@ function Login() {
                 //render error conditionally
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
+                    firstRef.current.value = "";
+                    lastRef.current.value = "";
                     emailRef.current.value = "";
                     passwordRef.current.value = "";
                 } else {
                     location.href = "/";
+                    //history.push("/");
                 }
             })
             .catch((error) => {
-                console.log("error on fetch after onFormSubmit: ", error);
+                console.log("error on fetch after handleRegistration: ", error);
+                setErrorMessage("oops, something went wrong!");
             });
     };
 
     return (
         <div className="reg-login-page">
-            <form
-                className="reg-login-form"
-                method="post"
-                // onSubmit={this.onFormSubmit}
-            >
-                <input ref={emailRef} placeholder="Email"></input>
+            <form className="reg-login-form" method="post">
+                <input
+                    type="text"
+                    ref={firstRef}
+                    placeholder="First name"
+                ></input>
 
-                <input ref={passwordRef} placeholder="Password"></input>
+                <input
+                    type="text"
+                    ref={lastRef}
+                    placeholder="Last name"
+                ></input>
+
+                <input type="email" ref={emailRef} placeholder="Email"></input>
+
+                <input
+                    type="password"
+                    ref={passwordRef}
+                    placeholder="Password"
+                ></input>
 
                 <input
                     className="reg-login-button"
                     type="submit"
                     value="login"
-                    onClick={handleLogin}
+                    onClick={handleRegistration}
                 ></input>
             </form>
 
             <div>
                 <p>
-                    Forgot your password? {" > "}
-                    <Link to="/resetpassword" id="link">
-                        reset
-                    </Link>
-                </p>
-
-                <p>
-                    No account yet?{" > "}
-                    <Link to="/" id="link">
-                        register
+                    Already a member?{" > "}
+                    <Link to="/login" id="link">
+                        login
                     </Link>
                 </p>
             </div>
+
             {errorMessage && <p className="error">{errorMessage}</p>}
         </div>
     );
@@ -93,4 +108,4 @@ function Login() {
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Exports
 
-export default Login;
+export default Registration;

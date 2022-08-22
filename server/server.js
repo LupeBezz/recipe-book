@@ -48,46 +48,43 @@ const cookieSessionMiddleware = cookieSession({
 
 app.use(cookieSessionMiddleware);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > register
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > registration
 
 app.post("/api/registration", (req, res) => {
+    console.log("fetch > req.body.first: ", req.body.first);
+    console.log("fetch > req.body.last: ", req.body.last);
+    console.log("fetch > req.body.email: ", req.body.email);
+    console.log("fetch > req.body.password: ", req.body.password);
     if (
-        !req.body.firstName ||
-        !req.body.lastName ||
+        !req.body.first ||
+        !req.body.last ||
         !req.body.email ||
         !req.body.password
     ) {
         res.json({ success: false, message: "All fields are necessary!" });
     } else {
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
-
         req.body.email = req.body.email.toLowerCase();
-
-        req.body.firstName =
-            req.body.firstName.charAt(0).toUpperCase() +
-            req.body.firstName.slice(1).toLowerCase();
-
-        req.body.lastName =
-            req.body.lastName.charAt(0).toUpperCase() +
-            req.body.lastName.slice(1).toLowerCase();
-
+        req.body.first =
+            req.body.first.charAt(0).toUpperCase() +
+            req.body.first.slice(1).toLowerCase();
+        req.body.last =
+            req.body.last.charAt(0).toUpperCase() +
+            req.body.last.slice(1).toLowerCase();
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - add User
-
         db.insertUser(
-            req.body.firstName,
-            req.body.lastName,
+            req.body.first,
+            req.body.last,
             req.body.email,
             req.body.password
         )
             .then((results) => {
                 console.log("insertUser worked!");
-                console.log("results.rows[0]: ", results.rows[0]);
-
+                //console.log("results.rows[0]: ", results.rows[0]);
                 // - - - - - - - - - - - - - - - - - - - - store id in cookie
                 var userId = results.rows[0].id;
                 req.session = { userId };
                 //res.send(`loginId: ${req.session.loginId}`);
-
                 res.json({ success: true });
             })
             .catch((err) => {
@@ -110,11 +107,14 @@ app.post("/api/login", (req, res) => {
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
 
         req.body.email = req.body.email.toLowerCase();
+        console.log("fetch > req.body.email: ", req.body.email);
+        console.log("fetch > req.body.password: ", req.body.password);
 
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check User
 
         db.getUserInfo(req.body.email)
             .then((results) => {
+                console.log("results: ", results);
                 if (results.rows.length === 0) {
                     console.log("Error in getUserInfo: email not found");
                     res.json({

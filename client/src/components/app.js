@@ -9,7 +9,7 @@
 function App() {
     return (
         <>
-            <h1>Welcome to Recipe Book - APP</h1>
+            <h1>Recipe Book - APP</h1>
         </>
     );
 }
