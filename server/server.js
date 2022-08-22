@@ -48,6 +48,165 @@ const cookieSessionMiddleware = cookieSession({
 
 app.use(cookieSessionMiddleware);
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > register
+
+app.post("/api/registration", (req, res) => {
+    if (
+        !req.body.firstName ||
+        !req.body.lastName ||
+        !req.body.email ||
+        !req.body.password
+    ) {
+        res.json({ success: false, message: "All fields are necessary!" });
+    } else {
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
+
+        req.body.email = req.body.email.toLowerCase();
+
+        req.body.firstName =
+            req.body.firstName.charAt(0).toUpperCase() +
+            req.body.firstName.slice(1).toLowerCase();
+
+        req.body.lastName =
+            req.body.lastName.charAt(0).toUpperCase() +
+            req.body.lastName.slice(1).toLowerCase();
+
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - add User
+
+        db.insertUser(
+            req.body.firstName,
+            req.body.lastName,
+            req.body.email,
+            req.body.password
+        )
+            .then((results) => {
+                console.log("insertUser worked!");
+                console.log("results.rows[0]: ", results.rows[0]);
+
+                // - - - - - - - - - - - - - - - - - - - - store id in cookie
+                var userId = results.rows[0].id;
+                req.session = { userId };
+                //res.send(`loginId: ${req.session.loginId}`);
+
+                res.json({ success: true });
+            })
+            .catch((err) => {
+                console.log("error in insertUser", err);
+                res.json({
+                    success: false,
+                    message: "oops, something went wrong!",
+                });
+            });
+        console.log("post request to /registration works");
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > login
+
+app.post("/api/login", (req, res) => {
+    if (!req.body.email || !req.body.password) {
+        res.json({ success: false, message: "All fields are necessary" });
+    } else {
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
+
+        req.body.email = req.body.email.toLowerCase();
+
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check User
+
+        db.getUserInfo(req.body.email)
+            .then((results) => {
+                if (results.rows.length === 0) {
+                    console.log("Error in getUserInfo: email not found");
+                    res.json({
+                        success: false,
+                        message: "oops, something went wrong!",
+                    });
+                } else {
+                    console.log("Success in getUserInfo: email found");
+
+                    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check password
+
+                    let inputPassword = req.body.password;
+                    let databasePassword = results.rows[0].password;
+
+                    return bcrypt
+                        .compare(inputPassword, databasePassword)
+                        .then((result) => {
+                            //console.log(result);
+                            if (result) {
+                                console.log("Success in Password Comparison");
+
+                                // - - - - - - - - - - - - - - - - - - - - store id in cookie
+                                var userId = results.rows[0].id;
+                                req.session = { userId };
+                                //res.send(`loginId: ${req.session.loginId}`);
+
+                                res.json({
+                                    success: true,
+                                });
+                            } else {
+                                console.log("Error in Password Comparison");
+                                res.json({
+                                    success: false,
+                                    message: "oops, something went wrong!",
+                                });
+                            }
+                        })
+                        .catch((error) => {
+                            console.log("Error in Password Comparison", error);
+                            res.json({
+                                success: false,
+                                message:
+                                    "Something went wrong, please try again",
+                            });
+                        });
+                }
+            })
+            .catch((err) => {
+                console.log("error in getUserInfo", err);
+                res.json({
+                    success: false,
+                    message: "Something went wrong, please try again",
+                });
+            });
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > upload profile picture
+
+// app.post(
+//     "/api/upload-picture",
+//     uploader.single("uploadPicture"),
+//     s3.upload,
+//     (req, res) => {
+//         //console.log("inside post -upload.json");
+//         //console.log("req.body inside post-upload: ", req.body);
+//         //console.log("req.file inside post-upload:", req.file);
+//         if (!req.file) {
+//             res.json({ message: "please select a file" });
+//         }
+//         let fullUrl =
+//             "https://s3.amazonaws.com/spicedling/" + req.file.filename;
+
+//         db.insertUserPicture(req.session.userId, fullUrl)
+//             .then((results) => {
+//                 //console.log("insertImage worked!");
+//                 //console.log("results:", results);
+//                 res.json({ fullUrl, message: "oops, something went wrong" });
+//             })
+//             .catch((err) => {
+//                 console.log("error in insertUserPicture", err);
+//             });
+//     }
+// );
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - logout button
+
+app.get("/api/logout", (req, res) => {
+    req.session.userId = null;
+    res.redirect("/");
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check if user is logged in
 
 app.get("/api/check/userId", function (req, res) {
