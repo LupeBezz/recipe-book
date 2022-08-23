@@ -55,13 +55,18 @@ app.post("/api/registration", (req, res) => {
     console.log("fetch > req.body.last: ", req.body.last);
     console.log("fetch > req.body.email: ", req.body.email);
     console.log("fetch > req.body.password: ", req.body.password);
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check if all required info is provided
     if (
         !req.body.first ||
         !req.body.last ||
         !req.body.email ||
         !req.body.password
     ) {
-        res.json({ success: false, message: "All fields are necessary!" });
+        res.json({ success: false, message: "All fields are necessary" });
+    }
+    //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check for a valid email
+    if (!req.body.email.includes("@")) {
+        res.json({ success: false, message: "Please insert a valid email" });
     } else {
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
         req.body.email = req.body.email.toLowerCase();
@@ -199,6 +204,92 @@ app.post("/api/login", (req, res) => {
 //             });
 //     }
 // );
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > insert recipe
+
+app.post("/api/recipe-upload", (req, res) => {
+    console.log("req.body: ", req.body);
+    if (
+        !req.body.title ||
+        !req.body.category ||
+        !req.body.ingredients ||
+        !req.body.directions
+    ) {
+        res.json({
+            success: false,
+            message: "Please complete the obligatory fields",
+        });
+    } else {
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
+
+        req.body.title = req.body.title.toLowerCase();
+
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - insert Recipe
+
+        db.insertRecipe(
+            req.session.userId,
+            req.body.title,
+            req.body.category,
+            req.body.ingredients,
+            req.body.directions,
+            req.body.description,
+            req.body.picture,
+            req.body.servings,
+            req.body.difficulty,
+            req.body.vegetarian,
+            req.body.vegan,
+            req.body.subcategory,
+            req.body.rating,
+            req.body.duration,
+            req.body.notes
+        )
+            .then((results) => {
+                console.log("results: ", results);
+                res.json(results.rows[0]);
+            })
+            .catch((err) => {
+                console.log("error in insertRecipe", err);
+                res.json({
+                    success: false,
+                    message: "Something went wrong, please try again",
+                });
+            });
+    }
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes from user
+
+app.get("/api/recipes-user", (req, res) => {
+    db.getUserRecipes(req.session.userId)
+        .then((results) => {
+            console.log("results: ", results);
+            res.json(results.rows[0]);
+        })
+        .catch((err) => {
+            console.log("error in getUserRecipes", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes by user and category
+
+app.get("/api/recipes-user/:category", (req, res) => {
+    db.getRecipesByCategory(req.session.userId, req.params.category)
+        .then((results) => {
+            console.log("results: ", results);
+            res.json(results.rows);
+        })
+        .catch((err) => {
+            console.log("error in getRecipesByCategory", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - logout button
 

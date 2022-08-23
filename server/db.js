@@ -111,21 +111,6 @@ module.exports.getUserInfo = (email) => {
     return db.query(`SELECT * FROM users WHERE email = $1`, [email]);
 };
 
-// RESET password
-
-module.exports.addSecretCode = (email, code) => {
-    return db.query(
-        `INSERT INTO reset_codes(email, code) VALUES ($1, $2) RETURNING *`,
-        [email, code]
-    );
-};
-
-module.exports.checkSecretCode = () => {
-    return db.query(
-        `SELECT code FROM reset_codes WHERE CURRENT_TIMESTAMP - timestamp < INTERVAL '10 minutes'`
-    );
-};
-
 module.exports.updatePassword = (password, email) => {
     return hashPassword(password).then((hashedPassword) => {
         return db.query(`UPDATE users SET password =$1 WHERE email = $2`, [
@@ -133,6 +118,21 @@ module.exports.updatePassword = (password, email) => {
             email,
         ]);
     });
+};
+
+// GET ALL RECIPES > from USER
+
+module.exports.getUserRecipes = (id) => {
+    return db.query(`SELECT * FROM recipes WHERE creator = $1`, [id]);
+};
+
+// GET ALL RECIPES > from USER > same category
+
+module.exports.getRecipesByCategory = (id, category) => {
+    return db.query(
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2`,
+        [id, category]
+    );
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - for the INGREDIENT SEARCH

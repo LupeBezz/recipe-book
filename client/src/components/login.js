@@ -9,8 +9,6 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the Login component
 
 function Login() {
-    const [email, setEmail] = useState();
-    const [password, setPassword] = useState();
     const [errorMessage, setErrorMessage] = useState();
 
     const emailRef = useRef();
@@ -18,16 +16,12 @@ function Login() {
 
     const handleLogin = (e) => {
         e.preventDefault();
-        console.log(emailRef.current.value);
-        console.log(passwordRef.current.value);
-        // setEmail(emailRef.current.value);
-        // setPassword(passwordRef.current.value);
 
         const userData = {
             email: emailRef.current.value,
             password: passwordRef.current.value,
         };
-        //console.log("userData: ", userData);
+
         fetch("/api/login", {
             method: "post",
             headers: {
@@ -37,12 +31,10 @@ function Login() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log("data: ", data);
-                //render error conditionally
+                //console.log("data: ", data);
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
-                    emailRef.current.value = "";
-                    passwordRef.current.value = "";
+                    clearFields();
                 } else {
                     location.href = "/";
                 }
@@ -52,16 +44,30 @@ function Login() {
             });
     };
 
+    const clearErrors = () => {
+        setErrorMessage("");
+    };
+
+    const clearFields = () => {
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
+    };
+
     return (
         <div className="reg-login-page">
-            <form
-                className="reg-login-form"
-                method="post"
-                // onSubmit={this.onFormSubmit}
-            >
-                <input ref={emailRef} placeholder="Email"></input>
+            <form className="reg-login-form" method="post">
+                <input
+                    type="email"
+                    ref={emailRef}
+                    placeholder="Email"
+                    onClick={clearErrors}
+                ></input>
 
-                <input ref={passwordRef} placeholder="Password"></input>
+                <input
+                    type="password"
+                    ref={passwordRef}
+                    placeholder="Password"
+                ></input>
 
                 <input
                     className="reg-login-button"
@@ -73,19 +79,13 @@ function Login() {
 
             <div>
                 <p>
-                    Forgot your password? {" > "}
-                    <Link to="/resetpassword" id="link">
-                        reset
-                    </Link>
-                </p>
-
-                <p>
                     No account yet?{" > "}
                     <Link to="/" id="link">
                         register
                     </Link>
                 </p>
             </div>
+
             {errorMessage && <p className="error">{errorMessage}</p>}
         </div>
     );

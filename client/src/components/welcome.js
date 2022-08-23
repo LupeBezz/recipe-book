@@ -16,7 +16,7 @@ function Welcome() {
         <>
             <h1>Recipe Book - WELCOME</h1>
             <BrowserRouter>
-                <div id="welcome-reg-login">
+                <div>
                     <Route exact path="/">
                         <Registration />
                     </Route>

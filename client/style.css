@@ -2,3 +2,34 @@
     box-sizing: border-box;
     margin: 0;
 }
+
+#shape-main {
+    height: 25vw;
+    width: 25vw;
+    border-radius: 50%;
+    background-color: yellow;
+}
+
+#shape-dessert {
+    height: 25vw;
+    width: 25vw;
+    border-radius: 50%;
+    background-color: orangered;
+}
+
+#shape-snack {
+    height: 25vw;
+    width: 25vw;
+    border-radius: 50%;
+    background-color: cyan;
+}
+
+.link-circle {
+    height: 5vw;
+    width: 5vw;
+    border-radius: 50%;
+    background-color: lightgray;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

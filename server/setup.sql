@@ -26,7 +26,7 @@ vegan BOOLEAN,
 subcategory VARCHAR,
 rating INTEGER,
 duration INTEGER,
-notes VARCHAR [],
+notes VARCHAR,
 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

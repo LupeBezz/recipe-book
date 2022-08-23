@@ -7,12 +7,8 @@ import ReactDOM from "react-dom";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - our Imports
 
-import App from "./components/App";
+import App from "./components/app";
 import Welcome from "./components/welcome";
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ReactDOM.render()
-
-//ReactDOM.render(<App />, document.querySelector("main"));
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check if visitor is logged in
 

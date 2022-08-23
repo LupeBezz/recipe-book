@@ -9,8 +9,6 @@ import { BrowserRouter, Route, Link } from "react-router-dom";
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the Registration component
 
 function Registration() {
-    // const [email, setEmail] = useState();
-    // const [password, setPassword] = useState();
     const [errorMessage, setErrorMessage] = useState();
 
     const firstRef = useRef();
@@ -19,12 +17,7 @@ function Registration() {
     const passwordRef = useRef();
 
     const handleRegistration = (e) => {
-        e.preventDefault();
-        setErrorMessage("");
-        console.log(firstRef.current.value);
-        console.log(lastRef.current.value);
-        console.log(emailRef.current.value);
-        console.log(passwordRef.current.value);
+        clearErrors();
 
         const userData = {
             first: firstRef.current.value,
@@ -32,7 +25,9 @@ function Registration() {
             email: emailRef.current.value,
             password: passwordRef.current.value,
         };
-        //console.log("userData: ", userData);
+
+        e.preventDefault();
+
         fetch("/api/registration", {
             method: "post",
             headers: {
@@ -42,14 +37,10 @@ function Registration() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log("data: ", data);
-                //render error conditionally
+                //console.log("data: ", data);
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
-                    firstRef.current.value = "";
-                    lastRef.current.value = "";
-                    emailRef.current.value = "";
-                    passwordRef.current.value = "";
+                    clearFields();
                 } else {
                     location.href = "/";
                     //history.push("/");
@@ -61,6 +52,17 @@ function Registration() {
             });
     };
 
+    const clearErrors = () => {
+        setErrorMessage("");
+    };
+
+    const clearFields = () => {
+        firstRef.current.value = "";
+        lastRef.current.value = "";
+        emailRef.current.value = "";
+        passwordRef.current.value = "";
+    };
+
     return (
         <div className="reg-login-page">
             <form className="reg-login-form" method="post">
@@ -68,6 +70,7 @@ function Registration() {
                     type="text"
                     ref={firstRef}
                     placeholder="First name"
+                    onClick={clearErrors}
                 ></input>
 
                 <input
