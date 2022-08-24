@@ -205,6 +205,23 @@ app.post("/api/login", (req, res) => {
 //     }
 // );
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get user info
+
+app.get("/api/user-info", (req, res) => {
+    db.getUserInfoById(req.session.userId)
+        .then((results) => {
+            //console.log("results: ", results);
+            res.json(results.rows[0]);
+        })
+        .catch((err) => {
+            console.log("error in getUserInfoById", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > insert recipe
 
 app.post("/api/recipe-upload", (req, res) => {
@@ -284,6 +301,23 @@ app.get("/api/recipes-user/:category", (req, res) => {
         })
         .catch((err) => {
             console.log("error in getRecipesByCategory", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipe by id
+
+app.get("/api/recipe-preview/:id", (req, res) => {
+    db.getRecipeById(req.params.id)
+        .then((results) => {
+            console.log("results after getRecipesById: ", results);
+            res.json(results.rows[0]);
+        })
+        .catch((err) => {
+            console.log("error in getRecipesById", err);
             res.json({
                 success: false,
                 message: "Something went wrong, please try again",

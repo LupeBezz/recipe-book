@@ -17,12 +17,13 @@ function ContainerSearch() {
     const { category } = useParams();
     const [recipes, setRecipes] = useState([]);
     const [preview, setPreview] = useState(false);
+    const [clickedrecipe, setClickedRecipe] = useState();
 
     useEffect(() => {
         fetch(`/api/recipes-user/${category}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log("data: ", data);
+                //console.log("data: ", data);
                 // console.log("success in fetch after getLastUSers");
                 setRecipes(data);
             })
@@ -31,21 +32,33 @@ function ContainerSearch() {
             });
     }, []);
 
-    const openPreview = () => {
-        setPreview(true);
+    // useEffect(() => {
+    //     console.log("clickedrecipe inside useEffect:", clickedrecipe);
+    // }, [clickedrecipe]);
+
+    const openPreview = (id) => {
+        if (preview == false) {
+            setPreview(true);
+            setClickedRecipe(id);
+            console.log("id: ", id);
+        } else {
+            setPreview(false);
+        }
     };
 
     return (
         <>
             <div>
-                <h1>container SEARCH</h1>
-                <p>{category}</p>
+                <h1>container search: {category}</h1>
                 {recipes.length > 0 && (
                     <>
                         <h1>recipe titles</h1>
                         <ul className="recipe-list">
                             {recipes.map((recipe, idx) => (
-                                <li key={idx} onClick={openPreview}>
+                                <li
+                                    key={idx}
+                                    onClick={() => openPreview(recipe.id)}
+                                >
                                     {recipe.title}
                                 </li>
                             ))}
@@ -58,7 +71,7 @@ function ContainerSearch() {
 
             {preview && (
                 <>
-                    <Preview />
+                    <Preview clickedrecipe={clickedrecipe} />
                 </>
             )}
 

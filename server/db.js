@@ -120,6 +120,12 @@ module.exports.updatePassword = (password, email) => {
     });
 };
 
+// LOGIN > check USER
+
+module.exports.getUserInfoById = (id) => {
+    return db.query(`SELECT * FROM users WHERE id = $1`, [id]);
+};
+
 // GET ALL RECIPES > from USER
 
 module.exports.getUserRecipes = (id) => {
@@ -133,6 +139,10 @@ module.exports.getRecipesByCategory = (id, category) => {
         `SELECT * FROM recipes WHERE creator = $1 AND category = $2`,
         [id, category]
     );
+};
+
+module.exports.getRecipeById = (id) => {
+    return db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - for the INGREDIENT SEARCH
