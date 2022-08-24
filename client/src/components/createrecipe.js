@@ -253,10 +253,12 @@ function CreateRecipe() {
                         <h1>added ingredients</h1>
                         <ul className="ingredient-added">
                             {ingredients.map((ingredient, idx) => (
-                                <li
-                                    key={idx}
-                                    onClick={() => deleteIngredient(idx)}
-                                >
+                                <li key={idx}>
+                                    <button
+                                        onClick={() => deleteIngredient(idx)}
+                                    >
+                                        x
+                                    </button>
                                     {ingredient}
                                 </li>
                             ))}
@@ -269,10 +271,12 @@ function CreateRecipe() {
                         <h1>added directions</h1>
                         <ul className="direction-added">
                             {directions.map((direction, idx) => (
-                                <li
-                                    key={idx}
-                                    onClick={() => deleteDirection(idx)}
-                                >
+                                <li key={idx}>
+                                    <button
+                                        onClick={() => deleteDirection(idx)}
+                                    >
+                                        x
+                                    </button>
                                     {direction}
                                 </li>
                             ))}

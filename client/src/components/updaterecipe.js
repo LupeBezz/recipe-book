@@ -26,6 +26,7 @@ function UpdateRecipe() {
     const categoryRef = useRef();
     const ingredientsRef = useRef();
     const directionsRef = useRef();
+    const ingredientsNewRef = useRef();
     const directionsNewRef = useRef();
     const servingsRef = useRef();
     const difficultyRef = useRef();
@@ -56,6 +57,50 @@ function UpdateRecipe() {
             });
     }, []);
 
+    const handleRecipeUpdate = (e) => {
+        e.preventDefault();
+
+        const recipeData = {
+            title: titleRef.current.value,
+            category: categoryRef.current.value,
+            ingredients: ingredients,
+            directions: directions,
+            servings: servingsRef.current.value,
+            difficulty: difficultyRef.current.value,
+            vegetarian: veggieRef.current.value,
+            vegan: veganRef.current.value,
+            subcategory: subcategoryRef.current.value,
+            rating: ratingRef.current.value,
+            duration: durationRef.current.value,
+            notes: notesRef.current.value,
+            id: recipe.id,
+        };
+
+        console.log("recipeData: ", recipeData);
+
+        fetch("/api/recipe-update", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(recipeData),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data: ", data);
+                // if (!data.success && data.message) {
+                //     setErrorMessage(data.message);
+                //     clearFields();
+                // } else {
+                //     location.href = "/";
+                // }
+            })
+            .catch((error) => {
+                console.log("error on fetch after insertRecipe: ", error);
+                setErrorMessage("oops, something went wrong!");
+            });
+    };
+
     const handleIngredientInput = async () => {
         console.log("handling ingredient input");
         await setIngredients((prevIngredients) => [
@@ -75,31 +120,32 @@ function UpdateRecipe() {
     };
 
     const handleIngredientsEdit = async () => {
-        console.log("ok");
+        //console.log("handling ingredients edit");
+
+        const allIngredients = document.querySelectorAll(
+            ".ingredients-updated"
+        );
+        const newIngredients = [];
+        allIngredients.forEach((ref) => {
+            newIngredients.push(ref.value);
+        });
+        console.log("newIngredients: ", newIngredients);
+
+        setIngredients(newIngredients);
+        setUpdateIngredients(false);
     };
 
     const handleDirectionsEdit = async () => {
-        console.log("handling directions edit");
-        console.log(
-            "directionsNewRef.current.value: ",
-            directionsNewRef.current.value
-        );
-        const refs = document.querySelectorAll(".directions-updated");
+        //console.log("handling directions edit");
+
+        const allDirections = document.querySelectorAll(".directions-updated");
         const newDirections = [];
-        refs.forEach((ref) => {
+        allDirections.forEach((ref) => {
             newDirections.push(ref.value);
         });
         console.log("newDirections: ", newDirections);
-        /*[...refs].map((ref) => ref.value);
-        console.log("refs: ", refs);
-        */
-        setDirections(newDirections);
 
-        // await setDirections((prevDirections) => [
-        //     ...prevDirections,
-        //     directionsRef.current.value,
-        // ]);
-        // directionsRef.current.value = "";
+        setDirections(newDirections);
         setUpdateDirections(false);
     };
 
@@ -280,13 +326,17 @@ function UpdateRecipe() {
                             defaultValue={recipe.notes}
                         ></textarea>
                     </form>
-                    {/* <button className="recipe-input-button" onClick={handleRecipeInput}>
-                upload
-            </button> */}
+
+                    <button
+                        className="recipe-input-button"
+                        onClick={handleRecipeUpdate}
+                    >
+                        update recipe
+                    </button>
 
                     {ingredients && (
                         <>
-                            <h1>current directions</h1>
+                            <h1>current ingredients</h1>
 
                             <ul className="ingredient-added">
                                 {ingredients.map((ingredient, idx) => (
@@ -305,8 +355,9 @@ function UpdateRecipe() {
                                             <>
                                                 <input
                                                     type="text"
-                                                    name="ingredients"
-                                                    ref={ingredientsRef}
+                                                    className="ingredients-updated"
+                                                    name={`ingredient-${idx}`}
+                                                    ref={ingredientsNewRef}
                                                     defaultValue={ingredient}
                                                 ></input>
                                             </>
@@ -314,6 +365,7 @@ function UpdateRecipe() {
                                     </li>
                                 ))}
                             </ul>
+
                             {!updateIngredients && (
                                 <>
                                     <button onClick={editIngredients}>
@@ -321,6 +373,7 @@ function UpdateRecipe() {
                                     </button>
                                 </>
                             )}
+
                             {updateIngredients && (
                                 <>
                                     <button onClick={handleIngredientsEdit}>

@@ -274,6 +274,58 @@ app.post("/api/recipe-upload", (req, res) => {
     }
 });
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > update recipe
+
+app.post("/api/recipe-update", (req, res) => {
+    //console.log("req.body: ", req.body);
+    if (
+        !req.body.title ||
+        !req.body.category ||
+        !req.body.ingredients ||
+        !req.body.directions
+    ) {
+        res.json({
+            success: false,
+            message: "Please complete the obligatory fields",
+        });
+    } else {
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info
+
+        req.body.title = req.body.title.toLowerCase();
+
+        //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - insert Recipe
+
+        db.updateRecipe(
+            req.body.title,
+            req.body.category,
+            req.body.ingredients,
+            req.body.directions,
+            req.body.description,
+            req.body.picture,
+            req.body.servings,
+            req.body.difficulty,
+            req.body.vegetarian,
+            req.body.vegan,
+            req.body.subcategory,
+            req.body.rating,
+            req.body.duration,
+            req.body.notes,
+            req.body.id
+        )
+            .then((results) => {
+                //console.log("results after updateRecipe: ", results);
+                res.json(results.rows[0]);
+            })
+            .catch((err) => {
+                console.log("error in updateRecipe", err);
+                res.json({
+                    success: false,
+                    message: "Something went wrong, please try again",
+                });
+            });
+    }
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes from user
 
 app.get("/api/recipes-user", (req, res) => {

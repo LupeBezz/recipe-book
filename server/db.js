@@ -103,6 +103,47 @@ module.exports.insertRecipe = (
     );
 };
 
+// update RECIPE
+
+module.exports.updateRecipe = (
+    title,
+    category,
+    ingredients,
+    directions,
+    description,
+    picture,
+    servings,
+    difficulty,
+    vegetarian,
+    vegan,
+    subcategory,
+    rating,
+    duration,
+    notes,
+    recipeid
+) => {
+    return db.query(
+        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, description = $5, picture = $6, servings = $7, difficulty = $8, vegetarian = $9, vegan = $10, subcategory = $11, rating = $12, duration = $13, notes = $14 WHERE id = $15 RETURNING *`,
+        [
+            title,
+            category,
+            ingredients,
+            directions,
+            description,
+            picture,
+            servings,
+            difficulty,
+            vegetarian,
+            vegan,
+            subcategory,
+            rating,
+            duration,
+            notes,
+            recipeid,
+        ]
+    );
+};
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET info from tables
 
 // LOGIN > check USER
