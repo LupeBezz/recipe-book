@@ -12,6 +12,9 @@ import UpdateRecipe from "./updaterecipe";
 import ContainerSearch from "./containersearch";
 import ContainerPreview from "./containerpreview";
 import ContainerRecipe from "./containerrecipe";
+import Logout from "./logout";
+import Groceries from "./groceries";
+import Preview from "./preview";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the App component
 
@@ -38,12 +41,39 @@ function App() {
 
     return (
         <>
-            <h1>Recipe Book - APP</h1>
-            <h1>{user.first}</h1>
-
             <BrowserRouter>
-                <div>
-                    <Route exact path="/">
+                <h1 id="username">{user.first}</h1>
+                <Route exact path="/">
+                    <div className="icons-container">
+                        <Link
+                            to="/create-recipe"
+                            className="link-circle"
+                            id="link-create"
+                        >
+                            <span className="material-symbols-outlined">
+                                add
+                            </span>
+                        </Link>
+                        <Link
+                            to="/groceries"
+                            className="link-circle"
+                            id="link-groceries"
+                        >
+                            <span className="material-symbols-outlined">
+                                shopping_bag
+                            </span>
+                        </Link>
+                        <Link
+                            to="/logout"
+                            className="link-circle"
+                            id="link-logout"
+                        >
+                            <span className="material-symbols-outlined">
+                                logout
+                            </span>
+                        </Link>
+                    </div>
+                    <div className="shapes-container">
                         <Link to="/search/main">
                             <div id="shape-main"></div>
                         </Link>
@@ -53,30 +83,32 @@ function App() {
                         <Link to="/search/snack">
                             <div id="shape-snack"></div>
                         </Link>
-                        <Link
-                            to="/create-recipe"
-                            className="link-circle"
-                            id="link-create"
-                        >
-                            add
-                        </Link>
-                    </Route>
-                    <Route exact path="/create-recipe">
-                        <CreateRecipe />
-                    </Route>
-                    <Route path="/update-recipe/:id">
-                        <UpdateRecipe />
-                    </Route>
-                    <Route path="/search/:category">
-                        <ContainerSearch />
-                    </Route>
-                    <Route exact path="/preview">
-                        <ContainerPreview />
-                    </Route>
-                    <Route exact path="/recipe">
-                        <ContainerRecipe />
-                    </Route>
-                </div>
+                    </div>
+                </Route>
+                <Route exact path="/create-recipe">
+                    <CreateRecipe />
+                </Route>
+                <Route path="/update-recipe/:id">
+                    <UpdateRecipe />
+                </Route>
+                <Route path="/search/:category">
+                    <ContainerSearch />
+                </Route>
+                <Route exact path="/preview">
+                    <ContainerPreview />
+                </Route>
+                <Route exact path="/recipe/:id">
+                    <Preview />
+                </Route>
+                <Route exact path="/recipe">
+                    <ContainerRecipe />
+                </Route>
+                <Route exact path="/groceries">
+                    <Groceries />
+                </Route>
+                <Route exact path="/logout">
+                    <Logout />
+                </Route>
             </BrowserRouter>
         </>
     );

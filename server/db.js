@@ -56,12 +56,6 @@ module.exports.insertUser = (first, last, email, password) => {
     });
 };
 
-// insert USER PIC
-
-module.exports.insertUserPicture = (id, url) => {
-    return db.query(`UPDATE users SET userpic=$2 WHERE id = $1`, [id, url]);
-};
-
 // insert RECIPE
 
 module.exports.insertRecipe = (
@@ -70,36 +64,37 @@ module.exports.insertRecipe = (
     category,
     ingredients,
     directions,
-    description,
-    picture,
     servings,
     difficulty,
-    vegetarian,
     vegan,
     subcategory,
-    rating,
     duration,
     notes
 ) => {
     return db.query(
-        `INSERT INTO recipes(creator, title, category, ingredients, directions, description, picture, servings, difficulty, vegetarian, vegan, subcategory, rating, duration, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11, $12, $13, $14, $15) RETURNING *`,
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, difficulty, vegan, subcategory, duration, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
         [
             id,
             title,
             category,
             ingredients,
             directions,
-            description,
-            picture,
-            servings,
-            difficulty,
-            vegetarian,
+            servings || null,
+            difficulty || null,
             vegan,
-            subcategory,
-            rating,
-            duration,
-            notes,
+            subcategory || null,
+            duration || null,
+            notes || null,
         ]
+    );
+};
+
+// insert PICTURE
+
+module.exports.insertPictureIntoRecipe = (picture, recipeid) => {
+    return db.query(
+        `UPDATE recipes SET picture = $1 WHERE id = $2 RETURNING *`,
+        [picture, recipeid]
     );
 };
 
@@ -110,38 +105,51 @@ module.exports.updateRecipe = (
     category,
     ingredients,
     directions,
-    description,
-    picture,
     servings,
     difficulty,
-    vegetarian,
     vegan,
     subcategory,
-    rating,
     duration,
     notes,
     recipeid
 ) => {
     return db.query(
-        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, description = $5, picture = $6, servings = $7, difficulty = $8, vegetarian = $9, vegan = $10, subcategory = $11, rating = $12, duration = $13, notes = $14 WHERE id = $15 RETURNING *`,
+        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, servings = $5, difficulty = $6, vegan = $7, subcategory = $8, duration = $9, notes = $10 WHERE id = $11 RETURNING *`,
         [
             title,
             category,
             ingredients,
             directions,
-            description,
-            picture,
-            servings,
-            difficulty,
-            vegetarian,
+            servings || null,
+            difficulty || null,
             vegan,
-            subcategory,
-            rating,
-            duration,
-            notes,
+            subcategory || null,
+            duration || null,
+            notes || null,
             recipeid,
         ]
     );
+};
+
+// delete RECIPE
+
+module.exports.deleteRecipe = (recipeid) => {
+    return db.query(`DELETE FROM recipes WHERE id = $1`, [recipeid]);
+};
+
+// insert GROCERIES
+
+module.exports.insertIntoGroceries = (userid, recipeid) => {
+    return db.query(
+        `INSERT INTO groceries(creator, recipe_id) VALUES ($1, $2)`,
+        [userid, recipeid]
+    );
+};
+
+// delete GROCERIES
+
+module.exports.deleteGroceries = (userid) => {
+    return db.query(`DELETE FROM groceries WHERE creator = $1`, [userid]);
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET info from tables
@@ -184,6 +192,15 @@ module.exports.getRecipesByCategory = (id, category) => {
 
 module.exports.getRecipeById = (id) => {
     return db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
+};
+
+// get GROCERIES
+
+module.exports.getGroceries = (userid) => {
+    return db.query(
+        `SELECT title, ingredients, groceries.id FROM groceries JOIN recipes ON (recipe_id=recipes.id AND groceries.creator = $1)`,
+        [userid]
+    );
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - for the INGREDIENT SEARCH

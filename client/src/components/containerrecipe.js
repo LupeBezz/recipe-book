@@ -22,7 +22,7 @@ function ContainerRecipe() {
                 <Recipe />
             </div>
             <Link to="/" className="link-circle" id="link-home">
-                home
+                <span className="material-symbols-outlined">home</span>
             </Link>
         </>
     );

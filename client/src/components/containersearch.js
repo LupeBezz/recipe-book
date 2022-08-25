@@ -48,7 +48,23 @@ function ContainerSearch() {
 
     return (
         <>
-            <div>
+            <div className="icons-container">
+                <Link to="/" className="link-circle" id="link-home">
+                    <span className="material-symbols-outlined">home</span>
+                </Link>
+                <div className="link-circle">
+                    <span className="material-symbols-outlined">search</span>
+                </div>
+                <div className="link-circle">
+                    <span className="material-symbols-outlined">favorite</span>
+                </div>
+                <div className="link-circle">
+                    <span className="material-symbols-outlined">
+                        nest_eco_leaf
+                    </span>
+                </div>
+            </div>
+            <div id="shape-background">
                 <h1>container search: {category}</h1>
                 {recipes.length > 0 && (
                     <>
@@ -74,10 +90,6 @@ function ContainerSearch() {
                     <Preview clickedrecipe={clickedrecipe} />
                 </>
             )}
-
-            <Link to="/" className="link-circle" id="link-home">
-                home
-            </Link>
         </>
     );
 }

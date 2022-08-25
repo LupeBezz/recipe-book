@@ -22,8 +22,8 @@ app.use(express.json());
 const cryptoRandomString = require("crypto-random-string");
 
 // const ses = require("./ses");
-// const s3 = require("./s3");
-// const uploader = require("./middleware").uploader;
+const s3 = require("./s3");
+const uploader = require("./middleware").uploader;
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - require database
 
@@ -177,34 +177,6 @@ app.post("/api/login", (req, res) => {
     }
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > upload profile picture
-
-// app.post(
-//     "/api/upload-picture",
-//     uploader.single("uploadPicture"),
-//     s3.upload,
-//     (req, res) => {
-//         //console.log("inside post -upload.json");
-//         //console.log("req.body inside post-upload: ", req.body);
-//         //console.log("req.file inside post-upload:", req.file);
-//         if (!req.file) {
-//             res.json({ message: "please select a file" });
-//         }
-//         let fullUrl =
-//             "https://s3.amazonaws.com/spicedling/" + req.file.filename;
-
-//         db.insertUserPicture(req.session.userId, fullUrl)
-//             .then((results) => {
-//                 //console.log("insertImage worked!");
-//                 //console.log("results:", results);
-//                 res.json({ fullUrl, message: "oops, something went wrong" });
-//             })
-//             .catch((err) => {
-//                 console.log("error in insertUserPicture", err);
-//             });
-//     }
-// );
-
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get user info
 
 app.get("/api/user-info", (req, res) => {
@@ -249,23 +221,20 @@ app.post("/api/recipe-upload", (req, res) => {
             req.body.category,
             req.body.ingredients,
             req.body.directions,
-            req.body.description,
-            req.body.picture,
             req.body.servings,
             req.body.difficulty,
-            req.body.vegetarian,
             req.body.vegan,
             req.body.subcategory,
-            req.body.rating,
             req.body.duration,
             req.body.notes
         )
             .then((results) => {
-                console.log("results: ", results);
+                console.log("success after insertRecipe");
+                //console.log("results: ", results);
                 res.json(results.rows[0]);
             })
             .catch((err) => {
-                console.log("error in insertRecipe", err);
+                console.log("error after insertRecipe", err);
                 res.json({
                     success: false,
                     message: "Something went wrong, please try again",
@@ -273,6 +242,36 @@ app.post("/api/recipe-upload", (req, res) => {
             });
     }
 });
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > upload recipe picture
+
+app.post(
+    "/api/picture-upload",
+    uploader.single("picture"),
+    // s3.upload,
+    (req, res) => {
+        //console.log("req.body inside post-upload: ", req.body);
+        //console.log("req.file inside post-upload:", req.file);
+
+        let fullUrl =
+            "https://s3.amazonaws.com/spicedling/" + req.file.filename;
+
+        db.insertPictureIntoRecipe(fullUrl, req.body.id)
+            .then((results) => {
+                console.log("success after insertPicture");
+                //console.log("insertImage worked!");
+                //console.log("results:", results);
+                res.json({ success: true });
+            })
+            .catch((err) => {
+                console.log("error in insertPicture", err);
+                res.json({
+                    success: false,
+                    message: "Something went wrong, please try again",
+                });
+            });
+    }
+);
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > update recipe
 
@@ -300,14 +299,10 @@ app.post("/api/recipe-update", (req, res) => {
             req.body.category,
             req.body.ingredients,
             req.body.directions,
-            req.body.description,
-            req.body.picture,
             req.body.servings,
             req.body.difficulty,
-            req.body.vegetarian,
             req.body.vegan,
             req.body.subcategory,
-            req.body.rating,
             req.body.duration,
             req.body.notes,
             req.body.id
@@ -326,12 +321,29 @@ app.post("/api/recipe-update", (req, res) => {
     }
 });
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > delete recipe
+
+app.get("/api/recipe-delete/:id", (req, res) => {
+    db.deleteRecipe(req.params.id)
+        .then((results) => {
+            console.log("results after deleteRecipe: ", results);
+            res.json({ success: true });
+        })
+        .catch((err) => {
+            console.log("error in deleteRecipe", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes from user
 
 app.get("/api/recipes-user", (req, res) => {
     db.getUserRecipes(req.session.userId)
         .then((results) => {
-            console.log("results: ", results);
+            //console.log("results: ", results);
             res.json(results.rows[0]);
         })
         .catch((err) => {
@@ -348,7 +360,7 @@ app.get("/api/recipes-user", (req, res) => {
 app.get("/api/recipes-user/:category", (req, res) => {
     db.getRecipesByCategory(req.session.userId, req.params.category)
         .then((results) => {
-            console.log("results: ", results);
+            //console.log("results: ", results);
             res.json(results.rows);
         })
         .catch((err) => {
@@ -365,7 +377,7 @@ app.get("/api/recipes-user/:category", (req, res) => {
 app.get("/api/recipe-preview/:id", (req, res) => {
     db.getRecipeById(req.params.id)
         .then((results) => {
-            console.log("results after getRecipesById: ", results);
+            //console.log("results after getRecipesById: ", results);
             res.json(results.rows[0]);
         })
         .catch((err) => {
@@ -377,17 +389,74 @@ app.get("/api/recipe-preview/:id", (req, res) => {
         });
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - logout button
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > insert groceries
 
-app.get("/api/logout", (req, res) => {
-    req.session.userId = null;
-    res.redirect("/");
+app.post("/api/groceries-insert/:id", (req, res) => {
+    console.log("req.body: ", req.body);
+
+    db.insertIntoGroceries(req.session.userId, req.params.id)
+        .then((results) => {
+            console.log("success after insertIntoGroceries");
+            //console.log("results: ", results);
+            res.json({
+                success: true,
+            });
+        })
+        .catch((err) => {
+            console.log("error after insertIntoGroceries", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get all groceries
+
+app.get("/api/groceries", (req, res) => {
+    db.getGroceries(req.session.userId)
+        .then((results) => {
+            console.log("results from getGroceries: ", results);
+            res.json(results.rows);
+        })
+        .catch((err) => {
+            console.log("error in getGroceries", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > delete groceries
+
+app.get("/api/groceries-delete", (req, res) => {
+    db.deleteGroceries(req.session.userId)
+        .then((results) => {
+            console.log("results after deleteGroceries: ", results);
+            res.json({ success: true });
+        })
+        .catch((err) => {
+            console.log("error in deleteGroceries", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - check if user is logged in
 
 app.get("/api/check/userId", function (req, res) {
     res.json({ userId: req.session.userId });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > logout button
+
+app.get("/api/logout", (req, res) => {
+    req.session.userId = null;
+    // res.json({});
+    res.redirect("/");
 });
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - serve html > position fixed

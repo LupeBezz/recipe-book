@@ -12,6 +12,7 @@ function CreateRecipe() {
     const [errorMessage, setErrorMessage] = useState();
     const [ingredients, setIngredients] = useState([]);
     const [directions, setDirections] = useState([]);
+    const [image, setImage] = useState("");
 
     const titleRef = useRef();
     const categoryRef = useRef();
@@ -19,12 +20,11 @@ function CreateRecipe() {
     const directionsRef = useRef();
     const servingsRef = useRef();
     const difficultyRef = useRef();
-    const veggieRef = useRef();
     const veganRef = useRef();
     const subcategoryRef = useRef();
-    const ratingRef = useRef();
     const durationRef = useRef();
     const notesRef = useRef();
+    const pictureRef = useRef();
 
     const handleRecipeInput = (e) => {
         e.preventDefault();
@@ -37,10 +37,8 @@ function CreateRecipe() {
             directions: directions,
             servings: servingsRef.current.value,
             difficulty: difficultyRef.current.value,
-            vegetarian: veggieRef.current.value,
             vegan: veganRef.current.value,
             subcategory: subcategoryRef.current.value,
-            rating: ratingRef.current.value,
             duration: durationRef.current.value,
             notes: notesRef.current.value,
         };
@@ -56,12 +54,42 @@ function CreateRecipe() {
         })
             .then((response) => response.json())
             .then((data) => {
-                console.log("data: ", data);
+                // console.log("data: ", data);
+
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
                     clearFields();
                 } else {
-                    location.href = "/";
+                    // location.href = "/";
+                    if (pictureRef.current.value) {
+                        const formData = new FormData();
+                        formData.append("picture", pictureRef.current.files[0]);
+                        formData.append("id", data.id);
+
+                        fetch("/api/picture-upload", {
+                            method: "post",
+                            body: formData,
+                        })
+                            .then((response) => response.json())
+                            .then((data) => {
+                                //console.log("data: ", data);
+                                console.log(
+                                    "success after fetch after create recipe"
+                                );
+                                if (!data.success && data.message) {
+                                    setErrorMessage(data.message);
+                                } else {
+                                    clearFields();
+                                }
+                            })
+                            .catch((error) => {
+                                console.log(
+                                    "error on fetch after insertPictureIntoRecipe: ",
+                                    error
+                                );
+                                setErrorMessage("oops, something went wrong!");
+                            });
+                    }
                 }
             })
             .catch((error) => {
@@ -191,12 +219,6 @@ function CreateRecipe() {
                         max="5"
                     ></input>
 
-                    <select name="veggie" id="recipe-veggie" ref={veggieRef}>
-                        <option hidden>veggie</option>
-                        <option value="true">yes</option>
-                        <option value="false">no</option>
-                    </select>
-
                     <select name="vegan" id="recipe-vegan" ref={veganRef}>
                         <option hidden>vegan</option>
                         <option value="true">yes</option>
@@ -219,15 +241,6 @@ function CreateRecipe() {
 
                     <input
                         type="number"
-                        name="rating"
-                        ref={ratingRef}
-                        placeholder="Rating (1-5)"
-                        min="1"
-                        max="5"
-                    ></input>
-
-                    <input
-                        type="number"
                         name="duration"
                         ref={durationRef}
                         placeholder="Duration (minutes)"
@@ -240,6 +253,13 @@ function CreateRecipe() {
                         ref={notesRef}
                         placeholder="Notes"
                     ></textarea>
+
+                    <input
+                        type="file"
+                        name="uploadPicture"
+                        ref={pictureRef}
+                        accept="image/*"
+                    />
                 </form>
                 <button
                     className="recipe-input-button"
@@ -287,7 +307,7 @@ function CreateRecipe() {
                 {errorMessage && <p className="error">{errorMessage}</p>}
             </div>
             <Link to="/" className="link-circle" id="link-home">
-                home
+                <span className="material-symbols-outlined">home</span>
             </Link>
         </>
     );

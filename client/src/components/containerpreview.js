@@ -22,7 +22,7 @@ function ContainerPreview() {
                 <Preview />
             </div>
             <Link to="/" className="link-circle" id="link-home">
-                home
+                <span className="material-symbols-outlined">home</span>
             </Link>
         </>
     );

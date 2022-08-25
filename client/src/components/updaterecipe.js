@@ -30,10 +30,8 @@ function UpdateRecipe() {
     const directionsNewRef = useRef();
     const servingsRef = useRef();
     const difficultyRef = useRef();
-    const veggieRef = useRef();
     const veganRef = useRef();
     const subcategoryRef = useRef();
-    const ratingRef = useRef();
     const durationRef = useRef();
     const notesRef = useRef();
 
@@ -42,7 +40,7 @@ function UpdateRecipe() {
         fetch(`/api/recipe-preview/${id}`)
             .then((response) => response.json())
             .then((data) => {
-                console.log("data after getRecipeById: ", data);
+                //console.log("data after getRecipeById: ", data);
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
                 } else {
@@ -67,10 +65,8 @@ function UpdateRecipe() {
             directions: directions,
             servings: servingsRef.current.value,
             difficulty: difficultyRef.current.value,
-            vegetarian: veggieRef.current.value,
             vegan: veganRef.current.value,
             subcategory: subcategoryRef.current.value,
-            rating: ratingRef.current.value,
             duration: durationRef.current.value,
             notes: notesRef.current.value,
             id: recipe.id,
@@ -199,6 +195,24 @@ function UpdateRecipe() {
         }
     };
 
+    const deleteRecipe = () => {
+        console.log("deleting!");
+        fetch(`/api/recipe-delete/${recipe.id}`)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data: ", data);
+                if (!data.success && data.message) {
+                    setErrorMessage(data.message);
+                } else {
+                    location.href = "/";
+                }
+            })
+            .catch((error) => {
+                console.log("error on fetch after deleteRecipe: ", error);
+                setErrorMessage("oops, something went wrong!");
+            });
+    };
+
     return (
         <>
             <h1>UPDATE RECIPE id {id}</h1>
@@ -263,17 +277,6 @@ function UpdateRecipe() {
                         ></input>
 
                         <select
-                            name="veggie"
-                            id="recipe-veggie"
-                            ref={veggieRef}
-                            defaultValue={recipe.vegetarian}
-                        >
-                            <option hidden>veggie</option>
-                            <option value="true">yes</option>
-                            <option value="false">no</option>
-                        </select>
-
-                        <select
                             name="vegan"
                             id="recipe-vegan"
                             ref={veganRef}
@@ -298,16 +301,6 @@ function UpdateRecipe() {
                             <option value="cookies">cookies</option>
                             <option value="cake">cake</option>
                         </select>
-
-                        <input
-                            type="number"
-                            name="rating"
-                            ref={ratingRef}
-                            placeholder="Rating (1-5)"
-                            min="1"
-                            max="5"
-                            defaultValue={recipe.rating}
-                        ></input>
 
                         <input
                             type="number"
@@ -431,6 +424,12 @@ function UpdateRecipe() {
                     )}
                 </>
             )}
+            <Link to="/" className="link-circle" id="link-home">
+                <span className="material-symbols-outlined">home</span>
+            </Link>
+            <div className="link-circle" onClick={deleteRecipe}>
+                <span className="material-symbols-outlined">delete</span>
+            </div>
         </>
     );
 }
