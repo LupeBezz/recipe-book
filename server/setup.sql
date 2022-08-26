@@ -17,22 +17,19 @@ title VARCHAR UNIQUE NOT NULL,
 category VARCHAR NOT NULL,
 ingredients VARCHAR [] NOT NULL,
 directions VARCHAR [] NOT NULL ,
-description VARCHAR,
 picture VARCHAR,
 servings INTEGER,
-difficulty INTEGER,
-vegetarian BOOLEAN,
-vegan BOOLEAN,
+vegan BOOLEAN DEFAULT false,
 subcategory VARCHAR,
-rating INTEGER,
 duration INTEGER,
+favorite BOOLEAN DEFAULT false,
 notes VARCHAR,
 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE groceries (
+CREATE TABLE menu (
 id SERIAL PRIMARY KEY,
 creator INTEGER NOT NULL REFERENCES users(id),
 recipe_id INTEGER NOT NULL,
-groceriestimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+menutimestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );

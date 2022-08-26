@@ -222,7 +222,6 @@ app.post("/api/recipe-upload", (req, res) => {
             req.body.ingredients,
             req.body.directions,
             req.body.servings,
-            req.body.difficulty,
             req.body.vegan,
             req.body.subcategory,
             req.body.duration,
@@ -248,7 +247,7 @@ app.post("/api/recipe-upload", (req, res) => {
 app.post(
     "/api/picture-upload",
     uploader.single("picture"),
-    // s3.upload,
+    s3.upload,
     (req, res) => {
         //console.log("req.body inside post-upload: ", req.body);
         //console.log("req.file inside post-upload:", req.file);
@@ -300,7 +299,6 @@ app.post("/api/recipe-update", (req, res) => {
             req.body.ingredients,
             req.body.directions,
             req.body.servings,
-            req.body.difficulty,
             req.body.vegan,
             req.body.subcategory,
             req.body.duration,
@@ -372,6 +370,31 @@ app.get("/api/recipes-user/:category", (req, res) => {
         });
 });
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes by user and category + FAVORITE
+
+app.get("/api/recipes-user/:category/:favorite/:vegan", (req, res) => {
+    console.log("category: ", req.params.category);
+    console.log("favorite: ", req.params.favorite);
+    console.log("vegan: ", req.params.vegan);
+    db.getRecipesByCategoryFiltered(
+        req.session.userId,
+        req.params.category,
+        req.params.favorite,
+        req.params.vegan
+    )
+        .then((results) => {
+            //console.log("results: ", results);
+            res.json(results.rows);
+        })
+        .catch((err) => {
+            console.log("error in getRecipesByCategory", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipe by id
 
 app.get("/api/recipe-preview/:id", (req, res) => {
@@ -389,21 +412,21 @@ app.get("/api/recipe-preview/:id", (req, res) => {
         });
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > insert groceries
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > insert menu
 
-app.post("/api/groceries-insert/:id", (req, res) => {
+app.post("/api/menu-insert/:id", (req, res) => {
     console.log("req.body: ", req.body);
 
-    db.insertIntoGroceries(req.session.userId, req.params.id)
+    db.insertIntoMenu(req.session.userId, req.params.id)
         .then((results) => {
-            console.log("success after insertIntoGroceries");
+            console.log("success after insertIntoMenu");
             //console.log("results: ", results);
             res.json({
                 success: true,
             });
         })
         .catch((err) => {
-            console.log("error after insertIntoGroceries", err);
+            console.log("error after insertIntoMenu", err);
             res.json({
                 success: false,
                 message: "Something went wrong, please try again",
@@ -411,16 +434,16 @@ app.post("/api/groceries-insert/:id", (req, res) => {
         });
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get all groceries
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get menu
 
-app.get("/api/groceries", (req, res) => {
-    db.getGroceries(req.session.userId)
+app.get("/api/menu", (req, res) => {
+    db.getMenu(req.session.userId)
         .then((results) => {
-            console.log("results from getGroceries: ", results);
+            console.log("results from getMenu: ", results);
             res.json(results.rows);
         })
         .catch((err) => {
-            console.log("error in getGroceries", err);
+            console.log("error in getMenu", err);
             res.json({
                 success: false,
                 message: "Something went wrong, please try again",
@@ -428,16 +451,50 @@ app.get("/api/groceries", (req, res) => {
         });
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > delete groceries
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > delete menu
 
-app.get("/api/groceries-delete", (req, res) => {
-    db.deleteGroceries(req.session.userId)
+app.get("/api/menu-delete", (req, res) => {
+    db.deleteMenu(req.session.userId)
         .then((results) => {
-            console.log("results after deleteGroceries: ", results);
+            console.log("results after deleteMenu: ", results);
             res.json({ success: true });
         })
         .catch((err) => {
-            console.log("error in deleteGroceries", err);
+            console.log("error in deleteMenu", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > delete recipe
+
+app.get("/api/menu-recipe-delete/:id", (req, res) => {
+    db.deleteMenuRecipe(req.params.id)
+        .then((results) => {
+            console.log("results after deleteMenuRecipe: ", results);
+            res.json({ success: true });
+        })
+        .catch((err) => {
+            console.log("error in deleteMenuRecipe", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > set favorite
+
+app.get("/api/recipe/favorite/:id/:favornot", (req, res) => {
+    db.setFavorite(req.params.id, req.params.favornot)
+        .then((results) => {
+            //console.log("results: ", results);
+            res.json({ success: true });
+        })
+        .catch((err) => {
+            console.log("error in setFavorite", err);
             res.json({
                 success: false,
                 message: "Something went wrong, please try again",

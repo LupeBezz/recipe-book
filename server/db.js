@@ -65,14 +65,13 @@ module.exports.insertRecipe = (
     ingredients,
     directions,
     servings,
-    difficulty,
     vegan,
     subcategory,
     duration,
     notes
 ) => {
     return db.query(
-        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, difficulty, vegan, subcategory, duration, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11) RETURNING *`,
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, vegan, subcategory, duration, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
         [
             id,
             title,
@@ -80,7 +79,6 @@ module.exports.insertRecipe = (
             ingredients,
             directions,
             servings || null,
-            difficulty || null,
             vegan,
             subcategory || null,
             duration || null,
@@ -106,7 +104,6 @@ module.exports.updateRecipe = (
     ingredients,
     directions,
     servings,
-    difficulty,
     vegan,
     subcategory,
     duration,
@@ -114,14 +111,13 @@ module.exports.updateRecipe = (
     recipeid
 ) => {
     return db.query(
-        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, servings = $5, difficulty = $6, vegan = $7, subcategory = $8, duration = $9, notes = $10 WHERE id = $11 RETURNING *`,
+        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, servings = $5, vegan = $6, subcategory = $7, duration = $8, notes = $9 WHERE id = $10 RETURNING *`,
         [
             title,
             category,
             ingredients,
             directions,
             servings || null,
-            difficulty || null,
             vegan,
             subcategory || null,
             duration || null,
@@ -137,19 +133,34 @@ module.exports.deleteRecipe = (recipeid) => {
     return db.query(`DELETE FROM recipes WHERE id = $1`, [recipeid]);
 };
 
-// insert GROCERIES
+// set FAVORITE
 
-module.exports.insertIntoGroceries = (userid, recipeid) => {
-    return db.query(
-        `INSERT INTO groceries(creator, recipe_id) VALUES ($1, $2)`,
-        [userid, recipeid]
-    );
+module.exports.setFavorite = (recipeid, favornot) => {
+    return db.query(`UPDATE recipes SET favorite = $2 WHERE id = $1`, [
+        recipeid,
+        favornot,
+    ]);
 };
 
-// delete GROCERIES
+// insert MENU
 
-module.exports.deleteGroceries = (userid) => {
-    return db.query(`DELETE FROM groceries WHERE creator = $1`, [userid]);
+module.exports.insertIntoMenu = (userid, recipeid) => {
+    return db.query(`INSERT INTO menu(creator, recipe_id) VALUES ($1, $2)`, [
+        userid,
+        recipeid,
+    ]);
+};
+
+// delete MENU
+
+module.exports.deleteMenu = (userid) => {
+    return db.query(`DELETE FROM menu WHERE creator = $1`, [userid]);
+};
+
+// delete RECIPE
+
+module.exports.deleteMenuRecipe = (recipeid) => {
+    return db.query(`DELETE FROM menu WHERE id = $1`, [recipeid]);
 };
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET info from tables
@@ -190,15 +201,29 @@ module.exports.getRecipesByCategory = (id, category) => {
     );
 };
 
+// GET ALL RECIPES > from USER > same category > with FILTERS
+
+module.exports.getRecipesByCategoryFiltered = (
+    id,
+    category,
+    favorite,
+    vegan
+) => {
+    return db.query(
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 AND favorite = $3 AND vegan = $4 `,
+        [id, category, favorite, vegan]
+    );
+};
+
 module.exports.getRecipeById = (id) => {
     return db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
 };
 
-// get GROCERIES
+// get MENU
 
-module.exports.getGroceries = (userid) => {
+module.exports.getMenu = (userid) => {
     return db.query(
-        `SELECT title, ingredients, groceries.id FROM groceries JOIN recipes ON (recipe_id=recipes.id AND groceries.creator = $1)`,
+        `SELECT title, ingredients, directions, picture, recipe_id, menu.id FROM menu JOIN recipes ON (recipe_id=recipes.id AND menu.creator = $1)`,
         [userid]
     );
 };

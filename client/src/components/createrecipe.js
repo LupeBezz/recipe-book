@@ -19,7 +19,7 @@ function CreateRecipe() {
     const ingredientsRef = useRef();
     const directionsRef = useRef();
     const servingsRef = useRef();
-    const difficultyRef = useRef();
+
     const veganRef = useRef();
     const subcategoryRef = useRef();
     const durationRef = useRef();
@@ -36,7 +36,7 @@ function CreateRecipe() {
             ingredients: ingredients,
             directions: directions,
             servings: servingsRef.current.value,
-            difficulty: difficultyRef.current.value,
+
             vegan: veganRef.current.value,
             subcategory: subcategoryRef.current.value,
             duration: durationRef.current.value,
@@ -80,6 +80,7 @@ function CreateRecipe() {
                                     setErrorMessage(data.message);
                                 } else {
                                     clearFields();
+                                    location.href = "/";
                                 }
                             })
                             .catch((error) => {
@@ -208,15 +209,6 @@ function CreateRecipe() {
                         name="servings"
                         ref={servingsRef}
                         placeholder="Servings"
-                    ></input>
-
-                    <input
-                        type="number"
-                        name="difficulty"
-                        ref={difficultyRef}
-                        placeholder="Difficulty (1-5)"
-                        min="1"
-                        max="5"
                     ></input>
 
                     <select name="vegan" id="recipe-vegan" ref={veganRef}>

@@ -51,9 +51,14 @@ function Preview(props) {
             <h2>PREVIEW</h2>
             {recipe && (
                 <>
-                    <h2 onClick={() => openDirections(recipe.id)}>
+                    {/* <h2 onClick={() => openDirections(recipe.id)}>
                         {recipe.title}
-                    </h2>
+                    </h2> */}
+
+                    <Link to={`/recipe/${recipe.id}`}>
+                        {recipe.title}
+                        {/* <img src={recipe.picture}></img> */}
+                    </Link>
 
                     {recipe.ingredients.map((ingredient, idx) => (
                         <li key={idx}>{ingredient}</li>

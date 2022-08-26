@@ -13,8 +13,10 @@ import ContainerSearch from "./containersearch";
 import ContainerPreview from "./containerpreview";
 import ContainerRecipe from "./containerrecipe";
 import Logout from "./logout";
-import Groceries from "./groceries";
+import Menu from "./menu";
 import Preview from "./preview";
+import Groceries from "./groceries";
+import Timer from "./timer";
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the App component
 
@@ -54,15 +56,12 @@ function App() {
                                 add
                             </span>
                         </Link>
-                        <Link
-                            to="/groceries"
-                            className="link-circle"
-                            id="link-groceries"
-                        >
+                        <Link to="/menu" className="link-circle" id="link-menu">
                             <span className="material-symbols-outlined">
-                                shopping_bag
+                                menu_book
                             </span>
                         </Link>
+
                         <Link
                             to="/logout"
                             className="link-circle"
@@ -97,14 +96,17 @@ function App() {
                 <Route exact path="/preview">
                     <ContainerPreview />
                 </Route>
-                <Route exact path="/recipe/:id">
+                {/* <Route exact path="/recipe/:id">
                     <Preview />
-                </Route>
-                <Route exact path="/recipe">
+                </Route> */}
+                <Route path="/recipe/:id">
                     <ContainerRecipe />
                 </Route>
-                <Route exact path="/groceries">
+                <Route exact path="/menu/groceries">
                     <Groceries />
+                </Route>
+                <Route exact path="/menu">
+                    <Menu />
                 </Route>
                 <Route exact path="/logout">
                     <Logout />

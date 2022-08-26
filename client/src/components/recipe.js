@@ -6,15 +6,22 @@ import { useState, useEffect, useRef } from "react";
 import { useParams, useHistory } from "react-router-dom";
 import { BrowserRouter, Route, Link } from "react-router-dom";
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - our Imports
+
+import Timer from "./timer";
+
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the Recipe component
 
 function Recipe(props) {
     const [recipe, setRecipe] = useState();
     const [update, setUpdate] = useState(false);
     const [errorMessage, setErrorMessage] = useState();
-    // const [directions, setDirections] = useState([]);
-    // const [directionDone, setDirectionDone] = useState();
+    const [favorite, setFavorite] = useState(false);
+    const [minutes, setMinutes] = useState();
+    const [alert, setAlert] = useState();
     const [color, setColor] = useState("black");
+
+    const timerRef = useRef();
 
     useEffect(() => {
         //console.log("props.clickedrecipe in useEffect: ", props.clickedrecipe);
@@ -26,6 +33,11 @@ function Recipe(props) {
                     setErrorMessage(data.message);
                 } else {
                     setRecipe(data);
+                    if (data.favorite == true) {
+                        setFavorite(true);
+                    } else {
+                        setFavorite(false);
+                    }
                     // setDirections(data.directions);
                     //console.log("data.directions: ", data.directions);
                 }
@@ -36,31 +48,22 @@ function Recipe(props) {
             });
     }, []);
 
-    // useEffect(() => {
-    //     console.log("directions: ", directions);
-    //     console.log("directions.length: ", directions.length);
-    //     var tempArray = new Array(directions.length).fill(false);
-    //     setDirectionDone(tempArray);
-    //     console.log("tempArray: ", tempArray);
-    //     //console.log("directionDone: ", directionDone);
-    // }, [directions]);
+    const insertMenu = () => {
+        console.log("inserting menu");
 
-    const insertGroceries = () => {
-        console.log("inserting groceries");
-
-        fetch(`/api/groceries-insert/${recipe.id}`, {
+        fetch(`/api/menu-insert/${recipe.id}`, {
             method: "post",
         })
             .then((response) => response.json())
             .then((data) => {
                 //console.log("data: ", data);
-                console.log("success after insertIntoGroceries");
+                console.log("success after insertIntoMenu");
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
                 }
             })
             .catch((error) => {
-                console.log("error on fetch after insertIntoGroceries", error);
+                console.log("error on fetch after insertIntoMenu", error);
             });
     };
 
@@ -82,22 +85,7 @@ function Recipe(props) {
             });
     };
 
-    // const markDone = (idx) => {
-    //     console.log("marking idx: ", idx);
-    //     // directionDone[idx] = true;
-    //     // setDirectionDone(directionDone);
-    //     if (directionDone[idx] == true) {
-    //         directionDone[idx] = false;
-    //     } else {
-    //         directionDone[idx] = true;
-    //     }
-    //     setDirectionDone(directionDone);
-
-    //     console.log("directionDone: ", directionDone);
-    //     // setColor("gray");
-    // };
-
-    const markDoneII = (e) => {
+    const markDone = (e) => {
         if (e.currentTarget.className == "recipe-directions-done") {
             e.currentTarget.className = "recipe-directions";
         } else {
@@ -105,22 +93,92 @@ function Recipe(props) {
         }
     };
 
+    const setTimer = () => {
+        // calculate milliseconds for the timer
+        // var audio = new Audio("../../public/click-3.mp3");
+
+        var minutes = timerRef.current.value;
+        var milliseconds = minutes * 60 * 1000;
+        setMinutes(minutes);
+        console.log(milliseconds);
+        timerRef.current.value = "";
+
+        // set timeOut
+        setTimeout(alert, milliseconds);
+
+        function alert() {
+            setAlert("time's up!");
+            setTimeout(clear, 2000);
+            // audio.play();
+        }
+
+        function clear() {
+            setAlert("");
+            setMinutes("");
+        }
+    };
+
+    const toggleFavorite = () => {
+        var favOrNot;
+        if (favorite == true) {
+            favOrNot = false;
+        } else {
+            favOrNot = true;
+        }
+        console.log("setting favorite!");
+        fetch(`/api/recipe/favorite/${recipe.id}/${favOrNot}`)
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data: ", data);
+                if (!data.success && data.message) {
+                    setErrorMessage(data.message);
+                } else {
+                    if (favorite == true) {
+                        setFavorite(false);
+                    } else {
+                        setFavorite(true);
+                    }
+                }
+            })
+            .catch((error) => {
+                console.log("error on fetch after setFavorite: ", error);
+                setErrorMessage("oops, something went wrong!");
+            });
+    };
+
     return (
         <>
             <h2>DIRECTIONS</h2>
             {recipe && (
                 <>
+                    <img src={recipe.picture} />
                     {recipe.directions.map((direction, idx) => (
                         <li
                             key={idx}
-                            onClick={markDoneII}
+                            onClick={markDone}
                             className={"recipe-directions"}
                         >
                             {direction}
                         </li>
                     ))}
+                    <input
+                        type="text"
+                        id="timer-input"
+                        ref={timerRef}
+                        placeholder="min"
+                    ></input>
 
-                    <div className="icon-circle-01">
+                    <div className="icon-circle-00" onClick={setTimer}>
+                        <span className="material-symbols-outlined">timer</span>
+                    </div>
+
+                    <div className="icon-circle-01" onClick={toggleFavorite}>
+                        <span className="material-symbols-outlined">
+                            favorite
+                        </span>
+                    </div>
+
+                    <div className="icon-circle-02">
                         <Link to={`/update-recipe/${recipe.id}`}>
                             <span className="material-symbols-outlined">
                                 refresh
@@ -128,19 +186,25 @@ function Recipe(props) {
                         </Link>
                     </div>
 
-                    <div className="icon-circle-02">
+                    <div className="icon-circle-03">
                         <span
                             className="material-symbols-outlined"
-                            onClick={insertGroceries}
+                            onClick={insertMenu}
                         >
-                            shopping_bag
+                            menu_book
                         </span>
                     </div>
-                    <div className="icon-circle-03" onClick={deleteRecipe}>
+                    <div className="icon-circle-04" onClick={deleteRecipe}>
                         <span className="material-symbols-outlined">
                             delete
                         </span>
                     </div>
+                </>
+            )}
+            {minutes && (
+                <>
+                    <h1>Timer set to {minutes} minutes</h1>
+                    {alert && <h1>DONE</h1>}
                 </>
             )}
         </>

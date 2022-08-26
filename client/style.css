@@ -59,8 +59,19 @@
     top: 0vh;
     left: 10vw;
     border-radius: 50%;
-    background-color: yellow;
     opacity: 80%;
+}
+
+.snack {
+    background-color: cyan;
+}
+
+.main {
+    background-color: yellow;
+}
+
+.dessert {
+    background-color: orangered;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - ICONS */
@@ -93,6 +104,36 @@
 
 .material-symbols-outlined {
     font-variation-settings: "FILL" 0, "wght" 350, "GRAD" 0, "opsz" 48;
+}
+
+#timer-input {
+    height: 3vw;
+    width: 3vw;
+    border-radius: 50%;
+    position: absolute;
+    left: 10vw;
+    background-color: lightgray;
+    text-align: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    border: none;
+}
+
+.icon-circle-00 {
+    height: 3vw;
+    width: 3vw;
+    border-radius: 50%;
+    position: absolute;
+    left: 15vw;
+    background-color: lightgray;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
 }
 
 .icon-circle-01 {
@@ -131,6 +172,21 @@
     border-radius: 50%;
     position: absolute;
     left: 30vw;
+    background-color: lightgray;
+    color: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.icon-circle-04 {
+    height: 3vw;
+    width: 3vw;
+    border-radius: 50%;
+    position: absolute;
+    left: 35vw;
     background-color: lightgray;
     color: black;
     display: flex;

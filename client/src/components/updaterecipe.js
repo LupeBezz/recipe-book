@@ -29,7 +29,6 @@ function UpdateRecipe() {
     const ingredientsNewRef = useRef();
     const directionsNewRef = useRef();
     const servingsRef = useRef();
-    const difficultyRef = useRef();
     const veganRef = useRef();
     const subcategoryRef = useRef();
     const durationRef = useRef();
@@ -64,7 +63,6 @@ function UpdateRecipe() {
             ingredients: ingredients,
             directions: directions,
             servings: servingsRef.current.value,
-            difficulty: difficultyRef.current.value,
             vegan: veganRef.current.value,
             subcategory: subcategoryRef.current.value,
             duration: durationRef.current.value,
@@ -264,16 +262,6 @@ function UpdateRecipe() {
                             ref={servingsRef}
                             placeholder="Servings"
                             defaultValue={recipe.servings}
-                        ></input>
-
-                        <input
-                            type="number"
-                            name="difficulty"
-                            ref={difficultyRef}
-                            placeholder="Difficulty (1-5)"
-                            min="1"
-                            max="5"
-                            defaultValue={recipe.difficulty}
                         ></input>
 
                         <select
