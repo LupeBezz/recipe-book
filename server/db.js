@@ -64,18 +64,20 @@ module.exports.insertRecipe = (
     category,
     ingredients,
     directions,
+    picture,
     servings,
     vegan,
     duration
 ) => {
     return db.query(
-        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, vegan, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, picture, servings, vegan, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
         [
             id,
             title,
             category,
             ingredients,
             directions,
+            picture || null,
             servings || null,
             vegan,
             duration || null,

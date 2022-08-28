@@ -17,13 +17,14 @@ function CreateRecipe() {
 
     const titleRef = useRef();
     const categoryRef = useRef();
+    const categoryScrapeRef = useRef();
     const ingredientsRef = useRef();
     const directionsRef = useRef();
     const servingsRef = useRef();
-
     const veganRef = useRef();
     const durationRef = useRef();
     const pictureRef = useRef();
+    const urlRef = useRef();
 
     const handleRecipeInput = (e) => {
         e.preventDefault();
@@ -166,6 +167,42 @@ function CreateRecipe() {
         ]);
     };
 
+    const scrapeRecipe = () => {
+        console.log("ready to scrape a recipe");
+        console.log("urlRef.current.value", urlRef.current.value);
+        var newRecipeId;
+
+        const recipeUrl = {
+            url: urlRef.current.value,
+            category: categoryScrapeRef.current.value,
+        };
+
+        fetch("/api/recipe-scrape", {
+            method: "post",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(recipeUrl),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                console.log("data: ", data);
+                newRecipeId = data.id;
+
+                if (!data.success && data.message) {
+                    setErrorMessage(data.message);
+                    clearFields();
+                } else {
+                    console.log("ok");
+                    location.href = `/update-recipe/${newRecipeId}`;
+                }
+            })
+            .catch((error) => {
+                console.log("error on fetch after insertRecipe: ", error);
+                setErrorMessage("oops, something went wrong!");
+            });
+    };
+
     return (
         <>
             <div className="icons-container">
@@ -206,45 +243,48 @@ function CreateRecipe() {
                             placeholder="directions"
                             onKeyUp={inputDirection}
                         ></input>
+                        <div className="input-oneline">
+                            <select
+                                className="input-small"
+                                name="category"
+                                id="recipe-category"
+                                ref={categoryRef}
+                            >
+                                <option hidden>category</option>
+                                <option value="main">main</option>
+                                <option value="dessert">dessert</option>
+                                <option value="starter">starter</option>
+                            </select>
 
-                        <select
-                            className="input-small"
-                            name="category"
-                            id="recipe-category"
-                            ref={categoryRef}
-                        >
-                            <option hidden>category</option>
-                            <option value="main">main</option>
-                            <option value="dessert">dessert</option>
-                            <option value="starter">starter</option>
-                        </select>
+                            <select
+                                className="input-small"
+                                name="vegan"
+                                id="recipe-vegan"
+                                ref={veganRef}
+                            >
+                                <option hidden>vegan</option>
+                                <option value="true">yes</option>
+                                <option value="false">no</option>
+                            </select>
+                        </div>
 
-                        <select
-                            className="input-small"
-                            name="vegan"
-                            id="recipe-vegan"
-                            ref={veganRef}
-                        >
-                            <option hidden>vegan</option>
-                            <option value="true">yes</option>
-                            <option value="false">no</option>
-                        </select>
+                        <div className="input-oneline">
+                            <input
+                                className="input-small"
+                                type="number"
+                                name="servings"
+                                ref={servingsRef}
+                                placeholder="servings"
+                            ></input>
 
-                        <input
-                            className="input-small"
-                            type="number"
-                            name="servings"
-                            ref={servingsRef}
-                            placeholder="servings"
-                        ></input>
-
-                        <input
-                            className="input-small"
-                            type="number"
-                            name="duration"
-                            ref={durationRef}
-                            placeholder="time (min)"
-                        ></input>
+                            <input
+                                className="input-small"
+                                type="number"
+                                name="duration"
+                                ref={durationRef}
+                                placeholder="time (min)"
+                            ></input>
+                        </div>
 
                         <input
                             type="file"
@@ -253,14 +293,42 @@ function CreateRecipe() {
                             accept="image/*"
                         />
                     </form>
-                    {errorMessage && (
-                        <p className="error-create-recipe">{errorMessage}</p>
-                    )}
+
                     <button
                         className="recipe-input-button"
                         onClick={handleRecipeInput}
                     >
                         UPLOAD
+                    </button>
+                    {errorMessage && (
+                        <p className="error-create-recipe">{errorMessage}</p>
+                    )}
+
+                    <input
+                        className="input-long scrape-url"
+                        type="text"
+                        name="directions"
+                        ref={urlRef}
+                        placeholder="url"
+                        // onKeyUp={scrapeRecipe}
+                    ></input>
+
+                    <select
+                        className="input-small scrape-category"
+                        name="category"
+                        ref={categoryScrapeRef}
+                    >
+                        <option hidden>category</option>
+                        <option value="main">main</option>
+                        <option value="dessert">dessert</option>
+                        <option value="starter">starter</option>
+                    </select>
+
+                    <button
+                        className="recipe-input-button scrape"
+                        onClick={scrapeRecipe}
+                    >
+                        GET
                     </button>
                 </div>
 

@@ -2,6 +2,8 @@
 
 // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - general Stuff
 
+const recipeScraper = require("recipe-scraper");
+
 const express = require("express");
 const app = express();
 const server = require("http").Server(app);
@@ -191,6 +193,48 @@ app.get("/api/user-info", (req, res) => {
                 success: false,
                 message: "Something went wrong, please try again",
             });
+        });
+});
+
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - post request > scrape recipes
+
+app.post("/api/recipe-scrape", (req, res) => {
+    // console.log("req.body: ", req.body);
+    console.log("req.body.url: ", req.body.url);
+    console.log("req.body.category: ", req.body.category);
+    recipeScraper(req.body.url)
+        .then((recipe) => {
+            // do something with recipe
+            console.log("recipe: ", recipe);
+            // console.log("recipe.name: ", recipe.name);
+            // console.log("recipe.ingredients: ", recipe.ingredients);
+            db.insertRecipe(
+                req.session.userId,
+                recipe.name,
+                req.body.category,
+                recipe.ingredients,
+                recipe.instructions,
+                recipe.image,
+                null,
+                false,
+                null
+            )
+                .then((results) => {
+                    console.log("success after insertRecipe");
+                    //console.log("results: ", results);
+                    res.json(results.rows[0]);
+                })
+                .catch((err) => {
+                    console.log("error after insertRecipe", err);
+                    res.json({
+                        success: false,
+                        message: "Something went wrong, please try again",
+                    });
+                });
+        })
+        .catch((error) => {
+            // do something with error
+            console.log("error in scraping :", error);
         });
 });
 

@@ -313,7 +313,7 @@ function UpdateRecipe() {
                                 className="recipe-input-button"
                                 onClick={handleRecipeUpdate}
                             >
-                                update recipe
+                                UPDATE
                             </button>
                         </div>
 
