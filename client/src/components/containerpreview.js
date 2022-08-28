@@ -1,33 +1,31 @@
-/* eslint-disable no-unused-vars */
+// /* eslint-disable no-unused-vars */
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - general Imports
+// // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - general Imports
 
-import { useState, useEffect, useRef } from "react";
-import { useParams, useHistory } from "react-router-dom";
-import { BrowserRouter, Route, Link } from "react-router-dom";
+// import { useState, useEffect, useRef } from "react";
+// import { useParams, useHistory } from "react-router-dom";
+// import { BrowserRouter, Route, Link } from "react-router-dom";
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - our Imports
+// // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - our Imports
 
-import Search from "./search";
-import Preview from "./preview";
+// import Preview from "./preview";
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the ContainerPreview component
+// // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - the ContainerPreview component
 
-function ContainerPreview() {
-    return (
-        <>
-            <div>
-                <h1>container PREVIEW</h1>
-                <Search />
-                <Preview />
-            </div>
-            <Link to="/" className="link-circle" id="link-home">
-                <span className="material-symbols-outlined">home</span>
-            </Link>
-        </>
-    );
-}
+// function ContainerPreview() {
+//     return (
+//         <>
+//             <div>
+//                 <h1>container PREVIEW</h1>
+//                 <Preview />
+//             </div>
+//             <Link to="/" className="link-circle" id="link-home">
+//                 <span className="material-symbols-outlined">home</span>
+//             </Link>
+//         </>
+//     );
+// }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Exports
+// // - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - Exports
 
-export default ContainerPreview;
+// export default ContainerPreview;

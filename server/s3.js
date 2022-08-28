@@ -11,7 +11,6 @@ if (process.env.NODE_ENV == "production") {
 } else {
     secrets = require("./secrets"); // in dev they are in secrets.json which is listed in .gitignore
 }
-console.log("secrets", secrets);
 
 const s3 = new aws.S3({
     accessKeyId: secrets.AWS_KEY,

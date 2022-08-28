@@ -67,42 +67,89 @@ function Menu() {
 
     return (
         <>
-            <h1>menu</h1>
-            {menu.length > 0 && (
-                <>
-                    <div className="menu-list">
+            <div className="icons-container">
+                <Link to="/" className="link-circle" id="link-home">
+                    <span className="material-symbols-outlined">home</span>
+                </Link>
+
+                <Link
+                    to="/menu/groceries"
+                    className="link-circle"
+                    id="link-groceries"
+                >
+                    <span className="material-symbols-outlined">
+                        shopping_bag
+                    </span>
+                </Link>
+
+                <div className="link-circle" onClick={deleteMenu}>
+                    <span className="material-symbols-outlined">delete</span>
+                </div>
+            </div>
+            <div id="menu-preview-all">
+                {menu.length > 0 && (
+                    <>
                         {menu.map((recipe, idx) => (
-                            <div key={recipe.id}>
-                                <div key={idx}>
-                                    <h2 key={recipe.id}>{recipe.title}</h2>
-                                    <h3> ingredients</h3>
-                                    <ul>
-                                        {recipe.ingredients.map(
-                                            (ingredient, idx) => (
-                                                <li key={idx}>{ingredient}</li>
-                                            )
-                                        )}
-                                    </ul>
-                                    <h3> steps</h3>
-                                    <ul>
-                                        {recipe.directions.map(
-                                            (direction, idx) => (
-                                                <li key={idx}>{direction}</li>
-                                            )
-                                        )}
-                                    </ul>
-                                </div>
+                            <div className="menu-preview" key={recipe.id}>
+                                <h2 key={recipe.id}>
+                                    {recipe.title.toUpperCase()}
+                                </h2>
                                 <Link
                                     to={`/recipe/${recipe.recipe_id}`}
-                                    className="link-circle"
-                                    id="link-recipe"
+                                    id="link-directions"
                                 >
-                                    <span className="material-symbols-outlined">
-                                        arrow_forward
-                                    </span>
+                                    <img
+                                        src={
+                                            recipe.picture ||
+                                            "/recipe_default.jpg"
+                                        }
+                                    />
                                 </Link>
+
+                                <ul className="ingredients-list">
+                                    {recipe.ingredients.map(
+                                        (ingredient, idx) => (
+                                            <li key={idx}>{ingredient}</li>
+                                        )
+                                    )}
+                                </ul>
+
+                                <div id="menu-icons-div">
+                                    {recipe.favorite == true && (
+                                        <span className="recipes-preview-icons material-symbols-outlined">
+                                            favorite
+                                        </span>
+                                    )}
+
+                                    {recipe.vegan == true && (
+                                        <span className="recipes-preview-icons material-symbols-outlined">
+                                            nest_eco_leaf
+                                        </span>
+                                    )}
+                                    {recipe.servings && (
+                                        <span className="recipes-preview-icons">
+                                            <span className="material-symbols-outlined">
+                                                person
+                                            </span>
+                                            <span className="icons-text">
+                                                {recipe.servings}
+                                            </span>
+                                        </span>
+                                    )}
+                                    {recipe.duration && (
+                                        <span className="recipes-preview-icons">
+                                            <span className="material-symbols-outlined">
+                                                schedule
+                                            </span>
+                                            <span className="icons-text">
+                                                {recipe.duration}min
+                                            </span>
+                                        </span>
+                                    )}
+                                </div>
+
                                 <div
-                                    className="link-circle"
+                                    className="link-circle delete-button-menu"
                                     onClick={() => deleteRecipe(recipe.id)}
                                 >
                                     <span className="material-symbols-outlined">
@@ -111,29 +158,9 @@ function Menu() {
                                 </div>
                             </div>
                         ))}
-                    </div>
-
-                    <Link to="/" className="link-circle" id="link-home">
-                        <span className="material-symbols-outlined">home</span>
-                    </Link>
-
-                    <Link
-                        to="/menu/groceries"
-                        className="link-circle"
-                        id="link-groceries"
-                    >
-                        <span className="material-symbols-outlined">
-                            shopping_bag
-                        </span>
-                    </Link>
-
-                    <div className="link-circle" onClick={deleteMenu}>
-                        <span className="material-symbols-outlined">
-                            delete
-                        </span>
-                    </div>
-                </>
-            )}
+                    </>
+                )}
+            </div>
 
             {menu.length == 0 && (
                 <>

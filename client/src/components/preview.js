@@ -48,24 +48,57 @@ function Preview(props) {
 
     return (
         <>
-            <h2>PREVIEW</h2>
-            {recipe && (
-                <>
-                    {/* <h2 onClick={() => openDirections(recipe.id)}>
-                        {recipe.title}
-                    </h2> */}
+            <div className="recipes-preview">
+                {recipe && (
+                    <>
+                        <h1> {recipe.title.toUpperCase()}</h1>
+                        <Link to={`/recipe/${recipe.id}`} id="link-directions">
+                            <img
+                                src={recipe.picture || "/recipe_default.jpg"}
+                            />
+                        </Link>
 
-                    <Link to={`/recipe/${recipe.id}`}>
-                        {recipe.title}
-                        {/* <img src={recipe.picture}></img> */}
-                    </Link>
+                        <ul className="ingredients-list">
+                            {recipe.ingredients.map((ingredient, idx) => (
+                                <li key={idx}> {ingredient}</li>
+                            ))}
+                        </ul>
+                        <div id="recipes-preview-icons-div">
+                            {recipe.favorite == true && (
+                                <span className="recipes-preview-icons material-symbols-outlined">
+                                    favorite
+                                </span>
+                            )}
 
-                    {recipe.ingredients.map((ingredient, idx) => (
-                        <li key={idx}>{ingredient}</li>
-                        // <input type="text" onChange={(e)=>{updateIngredient(e, idx)}}></input>
-                    ))}
-                </>
-            )}
+                            {recipe.vegan == true && (
+                                <span className="recipes-preview-icons material-symbols-outlined">
+                                    nest_eco_leaf
+                                </span>
+                            )}
+                            {recipe.servings && (
+                                <span className="recipes-preview-icons">
+                                    <span className="material-symbols-outlined">
+                                        person
+                                    </span>
+                                    <span className="icons-text">
+                                        {recipe.servings}
+                                    </span>
+                                </span>
+                            )}
+                            {recipe.duration && (
+                                <span className="recipes-preview-icons">
+                                    <span className="material-symbols-outlined">
+                                        schedule
+                                    </span>
+                                    <span className="icons-text">
+                                        {recipe.duration}min
+                                    </span>
+                                </span>
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
             {directions && (
                 <>
                     <Recipe clickedrecipe={clickedrecipe} />

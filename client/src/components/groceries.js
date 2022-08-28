@@ -28,23 +28,39 @@ function Groceries() {
             });
     }, []);
 
+    const markDone = (e) => {
+        if (!e.currentTarget.className) {
+            e.currentTarget.className = "groceries-marked";
+        } else if (e.currentTarget.className == "groceries-unmarked") {
+            e.currentTarget.className = "groceries-marked";
+        } else if (e.currentTarget.className == "groceries-marked") {
+            e.currentTarget.className = "groceries-unmarked";
+        }
+    };
+
     return (
         <>
-            <h1>Groceries</h1>
-            {groceries.length > 0 && (
-                <div className="menu-list">
-                    {groceries.map((recipe, idx) => (
-                        <ul key={recipe.id}>
-                            {recipe.ingredients.map((ingredient, idx) => (
-                                <li key={idx}>{ingredient}</li>
-                            ))}
-                        </ul>
-                    ))}
-                </div>
-            )}
-            <Link to="/" className="link-circle" id="link-home">
-                <span className="material-symbols-outlined">home</span>
-            </Link>
+            <div className="icons-container">
+                <Link to="/" className="link-circle" id="link-home">
+                    <span className="material-symbols-outlined">home</span>
+                </Link>
+            </div>
+            <div id="groceries-list-all">
+                {groceries.length > 0 && (
+                    <div className="groceries-list">
+                        <h1>GROCERIES</h1>
+                        {groceries.map((recipe, idx) => (
+                            <ul key={recipe.id}>
+                                {recipe.ingredients.map((ingredient, idx) => (
+                                    <li key={idx} onClick={markDone}>
+                                        {ingredient}
+                                    </li>
+                                ))}
+                            </ul>
+                        ))}
+                    </div>
+                )}
+            </div>
         </>
     );
 }

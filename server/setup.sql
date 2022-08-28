@@ -20,10 +20,8 @@ directions VARCHAR [] NOT NULL ,
 picture VARCHAR,
 servings INTEGER,
 vegan BOOLEAN DEFAULT false,
-subcategory VARCHAR,
 duration INTEGER,
 favorite BOOLEAN DEFAULT false,
-notes VARCHAR,
 timestamp TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

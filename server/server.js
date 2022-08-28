@@ -223,9 +223,7 @@ app.post("/api/recipe-upload", (req, res) => {
             req.body.directions,
             req.body.servings,
             req.body.vegan,
-            req.body.subcategory,
-            req.body.duration,
-            req.body.notes
+            req.body.duration
         )
             .then((results) => {
                 console.log("success after insertRecipe");
@@ -300,9 +298,7 @@ app.post("/api/recipe-update", (req, res) => {
             req.body.directions,
             req.body.servings,
             req.body.vegan,
-            req.body.subcategory,
             req.body.duration,
-            req.body.notes,
             req.body.id
         )
             .then((results) => {
@@ -370,7 +366,7 @@ app.get("/api/recipes-user/:category", (req, res) => {
         });
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes by user and category + FAVORITE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - get request > get recipes by user and category FILTERED
 
 app.get("/api/recipes-user/:category/:favorite/:vegan", (req, res) => {
     console.log("category: ", req.params.category);
@@ -383,11 +379,53 @@ app.get("/api/recipes-user/:category/:favorite/:vegan", (req, res) => {
         req.params.vegan
     )
         .then((results) => {
-            //console.log("results: ", results);
+            console.log("results.rows: ", results.rows);
             res.json(results.rows);
         })
         .catch((err) => {
             console.log("error in getRecipesByCategory", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+app.get("/api/recipes-user-fav/:category/:favorite/", (req, res) => {
+    console.log("category: ", req.params.category);
+    console.log("favorite: ", req.params.favorite);
+    db.getRecipesByCategoryFavFiltered(
+        req.session.userId,
+        req.params.category,
+        req.params.favorite
+    )
+        .then((results) => {
+            console.log("results.rows: ", results.rows);
+            res.json(results.rows);
+        })
+        .catch((err) => {
+            console.log("error in getRecipesByCategoryFavFiltered", err);
+            res.json({
+                success: false,
+                message: "Something went wrong, please try again",
+            });
+        });
+});
+
+app.get("/api/recipes-user-veg/:category/:vegan", (req, res) => {
+    console.log("category: ", req.params.category);
+    console.log("vegan: ", req.params.vegan);
+    db.getRecipesByCategoryVegFiltered(
+        req.session.userId,
+        req.params.category,
+        req.params.vegan
+    )
+        .then((results) => {
+            console.log("result.rows: ", results.rows);
+            res.json(results.rows);
+        })
+        .catch((err) => {
+            console.log("error in getRecipesByCategoryVegFiltered", err);
             res.json({
                 success: false,
                 message: "Something went wrong, please try again",

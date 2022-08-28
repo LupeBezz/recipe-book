@@ -66,12 +66,10 @@ module.exports.insertRecipe = (
     directions,
     servings,
     vegan,
-    subcategory,
-    duration,
-    notes
+    duration
 ) => {
     return db.query(
-        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, vegan, subcategory, duration, notes) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, vegan, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
         [
             id,
             title,
@@ -80,9 +78,7 @@ module.exports.insertRecipe = (
             directions,
             servings || null,
             vegan,
-            subcategory || null,
             duration || null,
-            notes || null,
         ]
     );
 };
@@ -105,13 +101,11 @@ module.exports.updateRecipe = (
     directions,
     servings,
     vegan,
-    subcategory,
     duration,
-    notes,
     recipeid
 ) => {
     return db.query(
-        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, servings = $5, vegan = $6, subcategory = $7, duration = $8, notes = $9 WHERE id = $10 RETURNING *`,
+        `UPDATE recipes SET title = $1, category = $2, ingredients = $3, directions = $4, servings = $5, vegan = $6, duration = $7 WHERE id = $8 RETURNING *`,
         [
             title,
             category,
@@ -119,9 +113,7 @@ module.exports.updateRecipe = (
             directions,
             servings || null,
             vegan,
-            subcategory || null,
             duration || null,
-            notes || null,
             recipeid,
         ]
     );
@@ -196,7 +188,7 @@ module.exports.getUserRecipes = (id) => {
 
 module.exports.getRecipesByCategory = (id, category) => {
     return db.query(
-        `SELECT * FROM recipes WHERE creator = $1 AND category = $2`,
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 ORDER BY title ASC`,
         [id, category]
     );
 };
@@ -210,8 +202,22 @@ module.exports.getRecipesByCategoryFiltered = (
     vegan
 ) => {
     return db.query(
-        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 AND favorite = $3 AND vegan = $4 `,
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 AND favorite = $3 AND vegan = $4 ORDER BY title ASC`,
         [id, category, favorite, vegan]
+    );
+};
+
+module.exports.getRecipesByCategoryFavFiltered = (id, category, favorite) => {
+    return db.query(
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 AND favorite = $3 ORDER BY title ASC`,
+        [id, category, favorite]
+    );
+};
+
+module.exports.getRecipesByCategoryVegFiltered = (id, category, vegan) => {
+    return db.query(
+        `SELECT * FROM recipes WHERE creator = $1 AND category = $2 AND vegan = $3 ORDER BY title ASC`,
+        [id, category, vegan]
     );
 };
 
@@ -223,7 +229,7 @@ module.exports.getRecipeById = (id) => {
 
 module.exports.getMenu = (userid) => {
     return db.query(
-        `SELECT title, ingredients, directions, picture, recipe_id, menu.id FROM menu JOIN recipes ON (recipe_id=recipes.id AND menu.creator = $1)`,
+        `SELECT title, ingredients, picture, favorite, servings, vegan, duration, recipe_id, menu.id FROM menu JOIN recipes ON (recipe_id=recipes.id AND menu.creator = $1)`,
         [userid]
     );
 };

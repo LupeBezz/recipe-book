@@ -20,13 +20,9 @@ function ContainerRecipe() {
             {id && (
                 <>
                     <div>
-                        <h1>container RECIPE</h1>
                         <Preview clickedrecipe={id} />
                         <Recipe clickedrecipe={id} />
                     </div>
-                    <Link to="/" className="link-circle" id="link-home">
-                        <span className="material-symbols-outlined">home</span>
-                    </Link>
                 </>
             )}
         </>

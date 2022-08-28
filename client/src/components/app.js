@@ -10,7 +10,7 @@ import { useState, useEffect, useRef } from "react";
 import CreateRecipe from "./createrecipe";
 import UpdateRecipe from "./updaterecipe";
 import ContainerSearch from "./containersearch";
-import ContainerPreview from "./containerpreview";
+// import ContainerPreview from "./containerpreview";
 import ContainerRecipe from "./containerrecipe";
 import Logout from "./logout";
 import Menu from "./menu";
@@ -74,13 +74,13 @@ function App() {
                     </div>
                     <div className="shapes-container">
                         <Link to="/search/main">
-                            <div id="shape-main"></div>
+                            <img id="shape-main" src="main.svg" />
                         </Link>
                         <Link to="/search/dessert">
-                            <div id="shape-dessert"></div>
+                            <img id="shape-dessert" src="dessert.svg" />
                         </Link>
-                        <Link to="/search/snack">
-                            <div id="shape-snack"></div>
+                        <Link to="/search/starter">
+                            <img id="shape-starter" src="starter.svg" />
                         </Link>
                     </div>
                 </Route>
@@ -93,9 +93,9 @@ function App() {
                 <Route path="/search/:category">
                     <ContainerSearch />
                 </Route>
-                <Route exact path="/preview">
+                {/* <Route exact path="/preview">
                     <ContainerPreview />
-                </Route>
+                </Route> */}
                 {/* <Route exact path="/recipe/:id">
                     <Preview />
                 </Route> */}

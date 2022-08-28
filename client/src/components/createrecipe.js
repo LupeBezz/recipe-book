@@ -13,6 +13,7 @@ function CreateRecipe() {
     const [ingredients, setIngredients] = useState([]);
     const [directions, setDirections] = useState([]);
     const [image, setImage] = useState("");
+    // const [newRecipeId, setNewRecipeId] = useState("");
 
     const titleRef = useRef();
     const categoryRef = useRef();
@@ -21,9 +22,7 @@ function CreateRecipe() {
     const servingsRef = useRef();
 
     const veganRef = useRef();
-    const subcategoryRef = useRef();
     const durationRef = useRef();
-    const notesRef = useRef();
     const pictureRef = useRef();
 
     const handleRecipeInput = (e) => {
@@ -36,14 +35,12 @@ function CreateRecipe() {
             ingredients: ingredients,
             directions: directions,
             servings: servingsRef.current.value,
-
             vegan: veganRef.current.value,
-            subcategory: subcategoryRef.current.value,
             duration: durationRef.current.value,
-            notes: notesRef.current.value,
         };
 
         console.log("recipeData: ", recipeData);
+        var newRecipeId;
 
         fetch("/api/recipe-upload", {
             method: "post",
@@ -54,33 +51,38 @@ function CreateRecipe() {
         })
             .then((response) => response.json())
             .then((data) => {
-                // console.log("data: ", data);
+                console.log("data: ", data);
+                // setNewRecipeId(data.id);
+                newRecipeId = data.id;
 
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
                     clearFields();
                 } else {
-                    // location.href = "/";
+                    // location.href = `/recipe/${data.id}`;
                     if (pictureRef.current.value) {
                         const formData = new FormData();
                         formData.append("picture", pictureRef.current.files[0]);
                         formData.append("id", data.id);
-
                         fetch("/api/picture-upload", {
                             method: "post",
                             body: formData,
                         })
                             .then((response) => response.json())
                             .then((data) => {
-                                //console.log("data: ", data);
+                                console.log("data: ", data);
                                 console.log(
                                     "success after fetch after create recipe"
                                 );
                                 if (!data.success && data.message) {
                                     setErrorMessage(data.message);
+                                    console.log(
+                                        "error after uploading picture: ",
+                                        data.message
+                                    );
                                 } else {
-                                    clearFields();
-                                    location.href = "/";
+                                    // clearFields();
+                                    location.href = `/recipe/${newRecipeId}`;
                                 }
                             })
                             .catch((error) => {
@@ -164,143 +166,139 @@ function CreateRecipe() {
 
     return (
         <>
-            <div>
-                <form
-                    className="create-recipe"
-                    method="post"
-                    onSubmit={(e) => e.preventDefault()}
-                >
-                    <input
-                        type="text"
-                        ref={titleRef}
-                        placeholder="Title"
-                        onClick={clearErrors}
-                    ></input>
+            <div className="icons-container">
+                <Link to="/" className="link-circle" id="link-home">
+                    <span className="material-symbols-outlined">home</span>
+                </Link>
+            </div>
+            <div className="recipe-form-page">
+                <div className="recipe-form">
+                    <h1>NEW RECIPE</h1>
+                    <form method="post" onSubmit={(e) => e.preventDefault()}>
+                        <input
+                            className="input-long"
+                            type="text"
+                            ref={titleRef}
+                            placeholder="title"
+                            onClick={clearErrors}
+                        ></input>
 
-                    <select
-                        name="category"
-                        id="recipe-category"
-                        ref={categoryRef}
+                        <input
+                            className="input-long"
+                            type="text"
+                            name="ingredients"
+                            ref={ingredientsRef}
+                            placeholder="ingredients"
+                            onKeyUp={inputIngredient}
+                        ></input>
+
+                        <input
+                            className="input-long"
+                            type="text"
+                            name="directions"
+                            ref={directionsRef}
+                            placeholder="directions"
+                            onKeyUp={inputDirection}
+                        ></input>
+
+                        <select
+                            className="input-small"
+                            name="category"
+                            id="recipe-category"
+                            ref={categoryRef}
+                        >
+                            <option hidden>category</option>
+                            <option value="main">main</option>
+                            <option value="dessert">dessert</option>
+                            <option value="starter">starter</option>
+                        </select>
+
+                        <select
+                            name="vegan"
+                            id="recipe-vegan"
+                            ref={veganRef}
+                            className="input-small"
+                        >
+                            <option hidden>vegan</option>
+                            <option value="true">yes</option>
+                            <option value="false">no</option>
+                        </select>
+
+                        <input
+                            type="number"
+                            name="servings"
+                            ref={servingsRef}
+                            placeholder="servings"
+                            className="input-small"
+                        ></input>
+
+                        <input
+                            type="number"
+                            name="duration"
+                            ref={durationRef}
+                            placeholder="time (min)"
+                            className="input-small"
+                        ></input>
+
+                        <input
+                            type="file"
+                            name="uploadPicture"
+                            ref={pictureRef}
+                            accept="image/*"
+                        />
+                    </form>
+                    <button
+                        className="recipe-input-button"
+                        onClick={handleRecipeInput}
                     >
-                        <option hidden>category</option>
-                        <option value="main">main</option>
-                        <option value="dessert">dessert</option>
-                        <option value="snack">snack</option>
-                    </select>
+                        UPLOAD
+                    </button>
+                </div>
 
-                    <input
-                        type="text"
-                        name="ingredients"
-                        ref={ingredientsRef}
-                        placeholder="Ingredients"
-                        onKeyUp={inputIngredient}
-                    ></input>
-
-                    <input
-                        type="text"
-                        name="directions"
-                        ref={directionsRef}
-                        placeholder="Directions"
-                        onKeyUp={inputDirection}
-                    ></input>
-
-                    <input
-                        type="number"
-                        name="servings"
-                        ref={servingsRef}
-                        placeholder="Servings"
-                    ></input>
-
-                    <select name="vegan" id="recipe-vegan" ref={veganRef}>
-                        <option hidden>vegan</option>
-                        <option value="true">yes</option>
-                        <option value="false">no</option>
-                    </select>
-
-                    <select
-                        name="subcategory"
-                        id="recipe-subcategory"
-                        ref={subcategoryRef}
-                    >
-                        <option hidden>subcategory</option>
-                        <option disabled>main</option>
-                        <option value="salad">salad</option>
-                        <option value="soup">soup</option>
-                        <option disabled>dessert</option>
-                        <option value="cookies">cookies</option>
-                        <option value="cake">cake</option>
-                    </select>
-
-                    <input
-                        type="number"
-                        name="duration"
-                        ref={durationRef}
-                        placeholder="Duration (minutes)"
-                    ></input>
-
-                    <textarea
-                        name="notes"
-                        rows="4"
-                        cols="50"
-                        ref={notesRef}
-                        placeholder="Notes"
-                    ></textarea>
-
-                    <input
-                        type="file"
-                        name="uploadPicture"
-                        ref={pictureRef}
-                        accept="image/*"
-                    />
-                </form>
-                <button
-                    className="recipe-input-button"
-                    onClick={handleRecipeInput}
-                >
-                    upload
-                </button>
-
-                {ingredients && (
-                    <>
-                        <h1>added ingredients</h1>
-                        <ul className="ingredient-added">
-                            {ingredients.map((ingredient, idx) => (
-                                <li key={idx}>
-                                    <button
+                <div className="recipe-added-element">
+                    {ingredients && (
+                        <>
+                            <h1>INGREDIENTS</h1>
+                            <ul className="ingredient-added">
+                                {ingredients.map((ingredient, idx) => (
+                                    <li
+                                        key={idx}
                                         onClick={() => deleteIngredient(idx)}
                                     >
-                                        x
-                                    </button>
-                                    {ingredient}
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
+                                        <span className="material-symbols-outlined">
+                                            check_box_outline_blank
+                                        </span>{" "}
+                                        {ingredient}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                </div>
 
-                {directions && (
-                    <>
-                        <h1>added directions</h1>
-                        <ul className="direction-added">
-                            {directions.map((direction, idx) => (
-                                <li key={idx}>
-                                    <button
+                <div className="recipe-added-element">
+                    {directions && (
+                        <>
+                            <h1>DIRECTIONS</h1>
+                            <ul className="direction-added">
+                                {directions.map((direction, idx) => (
+                                    <li
+                                        key={idx}
                                         onClick={() => deleteDirection(idx)}
                                     >
-                                        x
-                                    </button>
-                                    {direction}
-                                </li>
-                            ))}
-                        </ul>
-                    </>
-                )}
+                                        <span className="material-symbols-outlined">
+                                            check_box_outline_blank
+                                        </span>{" "}
+                                        {direction}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                </div>
 
                 {errorMessage && <p className="error">{errorMessage}</p>}
             </div>
-            <Link to="/" className="link-circle" id="link-home">
-                <span className="material-symbols-outlined">home</span>
-            </Link>
         </>
     );
 }

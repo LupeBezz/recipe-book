@@ -19,6 +19,7 @@ function UpdateRecipe() {
     const [directions, setDirections] = useState([]);
     const [updateIngredients, setUpdateIngredients] = useState(false);
     const [updateDirections, setUpdateDirections] = useState(false);
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     const { id } = useParams();
 
@@ -30,9 +31,7 @@ function UpdateRecipe() {
     const directionsNewRef = useRef();
     const servingsRef = useRef();
     const veganRef = useRef();
-    const subcategoryRef = useRef();
     const durationRef = useRef();
-    const notesRef = useRef();
 
     useEffect(() => {
         //console.log("props.clickedrecipe in useEffect: ", props.clickedrecipe);
@@ -64,9 +63,7 @@ function UpdateRecipe() {
             directions: directions,
             servings: servingsRef.current.value,
             vegan: veganRef.current.value,
-            subcategory: subcategoryRef.current.value,
             duration: durationRef.current.value,
-            notes: notesRef.current.value,
             id: recipe.id,
         };
 
@@ -82,12 +79,11 @@ function UpdateRecipe() {
             .then((response) => response.json())
             .then((data) => {
                 console.log("data: ", data);
-                // if (!data.success && data.message) {
-                //     setErrorMessage(data.message);
-                //     clearFields();
-                // } else {
-                //     location.href = "/";
-                // }
+                if (!data.success && data.message) {
+                    setErrorMessage(data.message);
+                } else {
+                    location.href = `/recipe/${data.id}`;
+                }
             })
             .catch((error) => {
                 console.log("error on fetch after insertRecipe: ", error);
@@ -193,6 +189,10 @@ function UpdateRecipe() {
         }
     };
 
+    const askDeleteRecipe = () => {
+        setConfirmDelete(true);
+    };
+
     const deleteRecipe = () => {
         console.log("deleting!");
         fetch(`/api/recipe-delete/${recipe.id}`)
@@ -237,7 +237,7 @@ function UpdateRecipe() {
                             <option hidden>category</option>
                             <option value="main">main</option>
                             <option value="dessert">dessert</option>
-                            <option value="snack">snack</option>
+                            <option value="starter">starter</option>
                         </select>
 
                         <input
@@ -275,21 +275,6 @@ function UpdateRecipe() {
                             <option value="false">no</option>
                         </select>
 
-                        <select
-                            name="subcategory"
-                            id="recipe-subcategory"
-                            ref={subcategoryRef}
-                            defaultValue={recipe.subcategory}
-                        >
-                            <option hidden>subcategory</option>
-                            <option disabled>main</option>
-                            <option value="salad">salad</option>
-                            <option value="soup">soup</option>
-                            <option disabled>dessert</option>
-                            <option value="cookies">cookies</option>
-                            <option value="cake">cake</option>
-                        </select>
-
                         <input
                             type="number"
                             name="duration"
@@ -297,15 +282,6 @@ function UpdateRecipe() {
                             placeholder="Duration (minutes)"
                             defaultValue={recipe.duration}
                         ></input>
-
-                        <textarea
-                            name="notes"
-                            rows="4"
-                            cols="50"
-                            ref={notesRef}
-                            placeholder="Notes"
-                            defaultValue={recipe.notes}
-                        ></textarea>
                     </form>
 
                     <button
@@ -415,9 +391,16 @@ function UpdateRecipe() {
             <Link to="/" className="link-circle" id="link-home">
                 <span className="material-symbols-outlined">home</span>
             </Link>
-            <div className="link-circle" onClick={deleteRecipe}>
-                <span className="material-symbols-outlined">delete</span>
+            <div className="link-circle" onClick={askDeleteRecipe}>
+                <span className="material-symbols-outlined priority">
+                    delete
+                </span>
             </div>
+            {confirmDelete && (
+                <div className="link-ellipse" onClick={deleteRecipe}>
+                    <p>SURE?</p>
+                </div>
+            )}
         </>
     );
 }

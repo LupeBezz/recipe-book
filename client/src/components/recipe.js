@@ -19,7 +19,10 @@ function Recipe(props) {
     const [favorite, setFavorite] = useState(false);
     const [minutes, setMinutes] = useState();
     const [alert, setAlert] = useState();
+    const [alertFavorite, setAlertFavorite] = useState(false);
     const [color, setColor] = useState("black");
+    const [category, setCategory] = useState();
+    const [confirmDelete, setConfirmDelete] = useState(false);
 
     const timerRef = useRef();
 
@@ -33,13 +36,12 @@ function Recipe(props) {
                     setErrorMessage(data.message);
                 } else {
                     setRecipe(data);
+                    setCategory(data.category);
                     if (data.favorite == true) {
                         setFavorite(true);
                     } else {
                         setFavorite(false);
                     }
-                    // setDirections(data.directions);
-                    //console.log("data.directions: ", data.directions);
                 }
             })
             .catch((error) => {
@@ -67,24 +69,6 @@ function Recipe(props) {
             });
     };
 
-    const deleteRecipe = () => {
-        console.log("deleting!");
-        fetch(`/api/recipe-delete/${recipe.id}`)
-            .then((response) => response.json())
-            .then((data) => {
-                console.log("data: ", data);
-                if (!data.success && data.message) {
-                    setErrorMessage(data.message);
-                } else {
-                    location.href = "/";
-                }
-            })
-            .catch((error) => {
-                console.log("error on fetch after deleteRecipe: ", error);
-                setErrorMessage("oops, something went wrong!");
-            });
-    };
-
     const markDone = (e) => {
         if (e.currentTarget.className == "recipe-directions-done") {
             e.currentTarget.className = "recipe-directions";
@@ -95,7 +79,8 @@ function Recipe(props) {
 
     const setTimer = () => {
         // calculate milliseconds for the timer
-        // var audio = new Audio("../../public/click-3.mp3");
+        setAlert("");
+        setMinutes("");
 
         var minutes = timerRef.current.value;
         var milliseconds = minutes * 60 * 1000;
@@ -107,15 +92,13 @@ function Recipe(props) {
         setTimeout(alert, milliseconds);
 
         function alert() {
-            setAlert("time's up!");
-            setTimeout(clear, 2000);
-            // audio.play();
+            setAlert(true);
+            // setTimeout(clear, 2000);
         }
 
-        function clear() {
-            setAlert("");
-            setMinutes("");
-        }
+        // function clear() {
+        //     setMinutes("");
+        // }
     };
 
     const toggleFavorite = () => {
@@ -137,6 +120,7 @@ function Recipe(props) {
                         setFavorite(false);
                     } else {
                         setFavorite(true);
+                        setAlertFavorite(true);
                     }
                 }
             })
@@ -148,63 +132,87 @@ function Recipe(props) {
 
     return (
         <>
-            <h2>DIRECTIONS</h2>
+            {category == "starter" && (
+                <img id="starter-bgr" src="/starter_bgr.svg" />
+            )}
+            {category == "main" && <img id="main-bgr" src="/main_bgr.svg" />}
+            {category == "dessert" && (
+                <img id="dessert-bgr" src="/dessert_bgr.svg" />
+            )}
+
             {recipe && (
                 <>
-                    <img src={recipe.picture} />
-                    {recipe.directions.map((direction, idx) => (
-                        <li
-                            key={idx}
-                            onClick={markDone}
-                            className={"recipe-directions"}
+                    <div className="icons-container">
+                        <Link to="/" className="link-circle" id="link-home">
+                            <span className="material-symbols-outlined">
+                                home
+                            </span>
+                        </Link>
+
+                        <input
+                            type="text"
+                            id="timer-input"
+                            className="link-circle"
+                            ref={timerRef}
+                            placeholder="min"
+                        ></input>
+
+                        <div className="link-circle" onClick={setTimer}>
+                            <span className="material-symbols-outlined">
+                                timer
+                            </span>
+                        </div>
+
+                        <div className="link-circle" onClick={toggleFavorite}>
+                            <span className="material-symbols-outlined">
+                                favorite
+                            </span>
+                        </div>
+
+                        <Link
+                            to={`/update-recipe/${recipe.id}`}
+                            className="link-circle"
                         >
-                            {direction}
-                        </li>
-                    ))}
-                    <input
-                        type="text"
-                        id="timer-input"
-                        ref={timerRef}
-                        placeholder="min"
-                    ></input>
-
-                    <div className="icon-circle-00" onClick={setTimer}>
-                        <span className="material-symbols-outlined">timer</span>
-                    </div>
-
-                    <div className="icon-circle-01" onClick={toggleFavorite}>
-                        <span className="material-symbols-outlined">
-                            favorite
-                        </span>
-                    </div>
-
-                    <div className="icon-circle-02">
-                        <Link to={`/update-recipe/${recipe.id}`}>
                             <span className="material-symbols-outlined">
                                 refresh
                             </span>
                         </Link>
+
+                        <div className="link-circle">
+                            <span
+                                className="material-symbols-outlined"
+                                onClick={insertMenu}
+                            >
+                                menu_book
+                            </span>
+                        </div>
                     </div>
 
-                    <div className="icon-circle-03">
-                        <span
-                            className="material-symbols-outlined"
-                            onClick={insertMenu}
-                        >
-                            menu_book
-                        </span>
+                    <div className="recipes-middle-line"></div>
+
+                    <div className="recipes-directions">
+                        <h1>STEPS</h1>
+                        <ul className="recipe-list directions-list">
+                            {recipe.directions.map((direction, idx) => (
+                                <li key={idx} onClick={markDone}>
+                                    <span className="material-symbols-outlined">
+                                        check_box_outline_blank
+                                    </span>
+                                    {direction}
+                                </li>
+                            ))}
+                        </ul>
+
+                        {minutes && (
+                            <>
+                                <div className="alert-middle-line"></div>
+                                <h1 id="timer">
+                                    TIMER SET TO {minutes} MINUTES
+                                </h1>
+                            </>
+                        )}
+                        {alert && <h1 id="timer-done">TIME IS UP!</h1>}
                     </div>
-                    <div className="icon-circle-04" onClick={deleteRecipe}>
-                        <span className="material-symbols-outlined">
-                            delete
-                        </span>
-                    </div>
-                </>
-            )}
-            {minutes && (
-                <>
-                    <h1>Timer set to {minutes} minutes</h1>
-                    {alert && <h1>DONE</h1>}
                 </>
             )}
         </>
