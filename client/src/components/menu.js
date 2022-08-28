@@ -38,7 +38,7 @@ function Menu() {
                 if (!data.success && data.message) {
                     setErrorMessage(data.message);
                 } else {
-                    location.href = "/";
+                    location.href = "/menu";
                 }
             })
             .catch((error) => {
@@ -71,20 +71,24 @@ function Menu() {
                 <Link to="/" className="link-circle" id="link-home">
                     <span className="material-symbols-outlined">home</span>
                 </Link>
-
-                <Link
-                    to="/menu/groceries"
-                    className="link-circle"
-                    id="link-groceries"
-                >
-                    <span className="material-symbols-outlined">
-                        shopping_bag
-                    </span>
-                </Link>
-
-                <div className="link-circle" onClick={deleteMenu}>
-                    <span className="material-symbols-outlined">delete</span>
-                </div>
+                {menu.length > 0 && (
+                    <>
+                        <Link
+                            to="/menu/groceries"
+                            className="link-circle"
+                            id="link-groceries"
+                        >
+                            <span className="material-symbols-outlined">
+                                shopping_bag
+                            </span>
+                        </Link>
+                        <div className="link-circle" onClick={deleteMenu}>
+                            <span className="material-symbols-outlined">
+                                delete
+                            </span>
+                        </div>
+                    </>
+                )}
             </div>
             <div id="menu-preview-all">
                 {menu.length > 0 && (
@@ -163,9 +167,11 @@ function Menu() {
             </div>
 
             {menu.length == 0 && (
-                <>
-                    <h2>you have no items!</h2>
-                </>
+                <div id="menu-page">
+                    <h2 id="menu-empty">
+                        YOU HAVE NO RECIPES SAVED ON THE MENU
+                    </h2>
+                </div>
             )}
         </>
     );

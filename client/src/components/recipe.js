@@ -50,7 +50,7 @@ function Recipe(props) {
             });
     }, []);
 
-    const insertMenu = () => {
+    const insertMenu = (e) => {
         console.log("inserting menu");
 
         fetch(`/api/menu-insert/${recipe.id}`, {
@@ -67,6 +67,11 @@ function Recipe(props) {
             .catch((error) => {
                 console.log("error on fetch after insertIntoMenu", error);
             });
+        if (e.currentTarget.className == "link-circle") {
+            e.currentTarget.className = "link-circle-clicked";
+        } else {
+            e.currentTarget.className = "link-circle";
+        }
     };
 
     const markDone = (e) => {
@@ -101,7 +106,7 @@ function Recipe(props) {
         // }
     };
 
-    const toggleFavorite = () => {
+    const toggleFavorite = (e) => {
         var favOrNot;
         if (favorite == true) {
             favOrNot = false;
@@ -118,9 +123,11 @@ function Recipe(props) {
                 } else {
                     if (favorite == true) {
                         setFavorite(false);
+                        // e.currentTarget.className = "link-circle-clicked";
                     } else {
                         setFavorite(true);
                         setAlertFavorite(true);
+                        // e.currentTarget.className = "link-circle";
                     }
                 }
             })
@@ -128,6 +135,11 @@ function Recipe(props) {
                 console.log("error on fetch after setFavorite: ", error);
                 setErrorMessage("oops, something went wrong!");
             });
+        if (e.currentTarget.className == "link-circle") {
+            e.currentTarget.className = "link-circle-clicked";
+        } else {
+            e.currentTarget.className = "link-circle";
+        }
     };
 
     return (
@@ -149,6 +161,27 @@ function Recipe(props) {
                             </span>
                         </Link>
 
+                        <Link
+                            to={`/update-recipe/${recipe.id}`}
+                            className="link-circle"
+                        >
+                            <span className="material-symbols-outlined">
+                                refresh
+                            </span>
+                        </Link>
+
+                        <div className="link-circle" onClick={toggleFavorite}>
+                            <span className="material-symbols-outlined">
+                                favorite
+                            </span>
+                        </div>
+
+                        <div className="link-circle" onClick={insertMenu}>
+                            <span className="material-symbols-outlined">
+                                menu_book
+                            </span>
+                        </div>
+
                         <input
                             type="text"
                             id="timer-input"
@@ -160,30 +193,6 @@ function Recipe(props) {
                         <div className="link-circle" onClick={setTimer}>
                             <span className="material-symbols-outlined">
                                 timer
-                            </span>
-                        </div>
-
-                        <div className="link-circle" onClick={toggleFavorite}>
-                            <span className="material-symbols-outlined">
-                                favorite
-                            </span>
-                        </div>
-
-                        <Link
-                            to={`/update-recipe/${recipe.id}`}
-                            className="link-circle"
-                        >
-                            <span className="material-symbols-outlined">
-                                refresh
-                            </span>
-                        </Link>
-
-                        <div className="link-circle">
-                            <span
-                                className="material-symbols-outlined"
-                                onClick={insertMenu}
-                            >
-                                menu_book
                             </span>
                         </div>
                     </div>

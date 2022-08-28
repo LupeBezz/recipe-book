@@ -92,6 +92,8 @@ function CreateRecipe() {
                                 );
                                 setErrorMessage("oops, something went wrong!");
                             });
+                    } else {
+                        location.href = `/recipe/${newRecipeId}`;
                     }
                 }
             })
@@ -174,7 +176,11 @@ function CreateRecipe() {
             <div className="recipe-form-page">
                 <div className="recipe-form">
                     <h1>NEW RECIPE</h1>
-                    <form method="post" onSubmit={(e) => e.preventDefault()}>
+                    <form
+                        method="post"
+                        id="recipe-form"
+                        onSubmit={(e) => e.preventDefault()}
+                    >
                         <input
                             className="input-long"
                             type="text"
@@ -214,10 +220,10 @@ function CreateRecipe() {
                         </select>
 
                         <select
+                            className="input-small"
                             name="vegan"
                             id="recipe-vegan"
                             ref={veganRef}
-                            className="input-small"
                         >
                             <option hidden>vegan</option>
                             <option value="true">yes</option>
@@ -225,19 +231,19 @@ function CreateRecipe() {
                         </select>
 
                         <input
+                            className="input-small"
                             type="number"
                             name="servings"
                             ref={servingsRef}
                             placeholder="servings"
-                            className="input-small"
                         ></input>
 
                         <input
+                            className="input-small"
                             type="number"
                             name="duration"
                             ref={durationRef}
                             placeholder="time (min)"
-                            className="input-small"
                         ></input>
 
                         <input
@@ -247,6 +253,9 @@ function CreateRecipe() {
                             accept="image/*"
                         />
                     </form>
+                    {errorMessage && (
+                        <p className="error-create-recipe">{errorMessage}</p>
+                    )}
                     <button
                         className="recipe-input-button"
                         onClick={handleRecipeInput}
@@ -296,8 +305,6 @@ function CreateRecipe() {
                         </>
                     )}
                 </div>
-
-                {errorMessage && <p className="error">{errorMessage}</p>}
             </div>
         </>
     );

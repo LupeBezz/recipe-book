@@ -206,7 +206,7 @@ app.post("/api/recipe-upload", (req, res) => {
     ) {
         res.json({
             success: false,
-            message: "Please complete the obligatory fields",
+            message: "The first four fields are obbligatory",
         });
     } else {
         //- - - - - - - - - - - - - - - - - - - - - - - - - - - - - - sanitize info

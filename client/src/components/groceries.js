@@ -44,6 +44,9 @@ function Groceries() {
                 <Link to="/" className="link-circle" id="link-home">
                     <span className="material-symbols-outlined">home</span>
                 </Link>
+                <Link to="/menu" className="link-circle" id="link-menu">
+                    <span className="material-symbols-outlined">menu_book</span>
+                </Link>
             </div>
             <div id="groceries-list-all">
                 {groceries.length > 0 && (

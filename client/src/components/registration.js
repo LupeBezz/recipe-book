@@ -65,6 +65,8 @@ function Registration() {
 
     return (
         <div className="reg-login-page">
+            <img id="logo-startpage" src="/logo.jpg" />
+            <h1 id="title-startpage">RECIPE BOOK</h1>
             <form className="reg-login-form" method="post">
                 <input
                     type="text"
@@ -90,21 +92,21 @@ function Registration() {
                 <input
                     className="reg-login-button"
                     type="submit"
-                    value="login"
+                    value="REGISTER"
                     onClick={handleRegistration}
                 ></input>
             </form>
 
             <div>
-                <p>
+                <p className="reg-login-sentence">
                     Already a member?{" > "}
-                    <Link to="/login" id="link">
-                        login
+                    <Link to="/login" className="reg-login-link">
+                        LOGIN
                     </Link>
                 </p>
             </div>
 
-            {errorMessage && <p className="error">{errorMessage}</p>}
+            {errorMessage && <p className="error-message">{errorMessage}</p>}
         </div>
     );
 }

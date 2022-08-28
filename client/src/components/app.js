@@ -74,13 +74,37 @@ function App() {
                     </div>
                     <div className="shapes-container">
                         <Link to="/search/main">
-                            <img id="shape-main" src="main.svg" />
+                            <div>
+                                <span
+                                    className="hovertext-main"
+                                    data-hover="MAIN"
+                                >
+                                    <img id="shape-main" src="main.svg" />
+                                </span>
+                            </div>
                         </Link>
                         <Link to="/search/dessert">
-                            <img id="shape-dessert" src="dessert.svg" />
+                            <div>
+                                <span
+                                    className="hovertext-dessert"
+                                    data-hover="DESSERT"
+                                >
+                                    <img
+                                        id="shape-dessert"
+                                        src="dessert_III.svg"
+                                    />
+                                </span>
+                            </div>
                         </Link>
                         <Link to="/search/starter">
-                            <img id="shape-starter" src="starter.svg" />
+                            <div>
+                                <span
+                                    className="hovertext-starter"
+                                    data-hover="STARTER"
+                                >
+                                    <img id="shape-starter" src="starter.svg" />
+                                </span>
+                            </div>
                         </Link>
                     </div>
                 </Route>

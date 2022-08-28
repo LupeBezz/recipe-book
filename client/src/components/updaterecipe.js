@@ -213,194 +213,238 @@ function UpdateRecipe() {
 
     return (
         <>
-            <h1>UPDATE RECIPE id {id}</h1>
-            {recipe && (
-                <>
-                    <form
-                        className="create-recipe"
-                        method="post"
-                        onSubmit={(e) => e.preventDefault()}
-                    >
-                        <input
-                            type="text"
-                            ref={titleRef}
-                            defaultValue={recipe.title}
-                            placeholder="Title"
-                        ></input>
-
-                        <select
-                            name="category"
-                            id="recipe-category"
-                            ref={categoryRef}
-                            defaultValue={recipe.category}
-                        >
-                            <option hidden>category</option>
-                            <option value="main">main</option>
-                            <option value="dessert">dessert</option>
-                            <option value="starter">starter</option>
-                        </select>
-
-                        <input
-                            type="text"
-                            name="ingredients"
-                            ref={ingredientsRef}
-                            placeholder="Additional Ingredients"
-                            onKeyUp={inputIngredient}
-                        ></input>
-
-                        <input
-                            type="text"
-                            name="directions"
-                            ref={directionsRef}
-                            placeholder="Additional directions"
-                            onKeyUp={inputDirection}
-                        ></input>
-
-                        <input
-                            type="number"
-                            name="servings"
-                            ref={servingsRef}
-                            placeholder="Servings"
-                            defaultValue={recipe.servings}
-                        ></input>
-
-                        <select
-                            name="vegan"
-                            id="recipe-vegan"
-                            ref={veganRef}
-                            defaultValue={recipe.vegan}
-                        >
-                            <option hidden>vegan</option>
-                            <option value="true">yes</option>
-                            <option value="false">no</option>
-                        </select>
-
-                        <input
-                            type="number"
-                            name="duration"
-                            ref={durationRef}
-                            placeholder="Duration (minutes)"
-                            defaultValue={recipe.duration}
-                        ></input>
-                    </form>
-
-                    <button
-                        className="recipe-input-button"
-                        onClick={handleRecipeUpdate}
-                    >
-                        update recipe
-                    </button>
-
-                    {ingredients && (
-                        <>
-                            <h1>current ingredients</h1>
-
-                            <ul className="ingredient-added">
-                                {ingredients.map((ingredient, idx) => (
-                                    <li key={idx}>
-                                        <button
-                                            onClick={() =>
-                                                deleteIngredient(idx)
-                                            }
-                                        >
-                                            x
-                                        </button>
-                                        {!updateIngredients && (
-                                            <>{ingredient}</>
-                                        )}
-                                        {updateIngredients && (
-                                            <>
-                                                <input
-                                                    type="text"
-                                                    className="ingredients-updated"
-                                                    name={`ingredient-${idx}`}
-                                                    ref={ingredientsNewRef}
-                                                    defaultValue={ingredient}
-                                                ></input>
-                                            </>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            {!updateIngredients && (
-                                <>
-                                    <button onClick={editIngredients}>
-                                        edit
-                                    </button>
-                                </>
-                            )}
-
-                            {updateIngredients && (
-                                <>
-                                    <button onClick={handleIngredientsEdit}>
-                                        ok
-                                    </button>
-                                </>
-                            )}
-                        </>
-                    )}
-
-                    {directions && (
-                        <>
-                            <h1>current directions</h1>
-
-                            <ul className="direction-added">
-                                {directions.map((direction, idx) => (
-                                    <li key={idx}>
-                                        <button
-                                            onClick={() => deleteDirection(idx)}
-                                        >
-                                            x
-                                        </button>
-                                        {!updateDirections && <>{direction}</>}
-                                        {updateDirections && (
-                                            <>
-                                                <input
-                                                    type="text"
-                                                    className="directions-updated"
-                                                    name={`direction-${idx}`}
-                                                    ref={directionsNewRef}
-                                                    defaultValue={direction}
-                                                ></input>
-                                            </>
-                                        )}
-                                    </li>
-                                ))}
-                            </ul>
-
-                            {!updateDirections && (
-                                <>
-                                    <button onClick={editDirections}>
-                                        edit
-                                    </button>
-                                </>
-                            )}
-
-                            {updateDirections && (
-                                <>
-                                    <button onClick={handleDirectionsEdit}>
-                                        ok
-                                    </button>
-                                </>
-                            )}
-                        </>
-                    )}
-                </>
-            )}
-            <Link to="/" className="link-circle" id="link-home">
-                <span className="material-symbols-outlined">home</span>
-            </Link>
-            <div className="link-circle" onClick={askDeleteRecipe}>
-                <span className="material-symbols-outlined priority">
-                    delete
-                </span>
-            </div>
-            {confirmDelete && (
-                <div className="link-ellipse" onClick={deleteRecipe}>
-                    <p>SURE?</p>
+            <div className="icons-container">
+                <Link to="/" className="link-circle" id="link-home">
+                    <span className="material-symbols-outlined">home</span>
+                </Link>
+                <div className="link-circle" onClick={askDeleteRecipe}>
+                    <span className="material-symbols-outlined priority">
+                        delete
+                    </span>
                 </div>
-            )}
+                {confirmDelete && (
+                    <div className="link-ellipse" onClick={deleteRecipe}>
+                        <p>SURE?</p>
+                    </div>
+                )}
+            </div>
+            <div className="recipe-form-page">
+                {recipe && (
+                    <>
+                        <div className="recipe-form">
+                            <h1>UPDATE RECIPE</h1>
+                            <form
+                                className="create-recipe"
+                                id="recipe-form"
+                                method="post"
+                                onSubmit={(e) => e.preventDefault()}
+                            >
+                                <input
+                                    className="input-long"
+                                    type="text"
+                                    ref={titleRef}
+                                    defaultValue={recipe.title}
+                                    placeholder="Title"
+                                ></input>
+
+                                <input
+                                    className="input-long"
+                                    type="text"
+                                    name="ingredients"
+                                    ref={ingredientsRef}
+                                    placeholder="Additional Ingredients"
+                                    onKeyUp={inputIngredient}
+                                ></input>
+
+                                <input
+                                    className="input-long"
+                                    type="text"
+                                    name="directions"
+                                    ref={directionsRef}
+                                    placeholder="Additional directions"
+                                    onKeyUp={inputDirection}
+                                ></input>
+
+                                <select
+                                    className="input-small"
+                                    name="category"
+                                    id="recipe-category"
+                                    ref={categoryRef}
+                                    defaultValue={recipe.category}
+                                >
+                                    <option hidden>category</option>
+                                    <option value="main">main</option>
+                                    <option value="dessert">dessert</option>
+                                    <option value="starter">starter</option>
+                                </select>
+
+                                <select
+                                    className="input-small"
+                                    name="vegan"
+                                    id="recipe-vegan"
+                                    ref={veganRef}
+                                    defaultValue={recipe.vegan}
+                                >
+                                    <option hidden>vegan</option>
+                                    <option value="true">yes</option>
+                                    <option value="false">no</option>
+                                </select>
+
+                                <input
+                                    className="input-small"
+                                    type="number"
+                                    name="servings"
+                                    ref={servingsRef}
+                                    placeholder="Servings"
+                                    defaultValue={recipe.servings}
+                                ></input>
+
+                                <input
+                                    className="input-small"
+                                    type="number"
+                                    name="duration"
+                                    ref={durationRef}
+                                    placeholder="Duration (minutes)"
+                                    defaultValue={recipe.duration}
+                                ></input>
+                            </form>
+
+                            <button
+                                className="recipe-input-button"
+                                onClick={handleRecipeUpdate}
+                            >
+                                update recipe
+                            </button>
+                        </div>
+
+                        <div className="recipe-added-element">
+                            {ingredients && (
+                                <>
+                                    <h1>INGREDIENTS</h1>
+
+                                    <ul className="ingredient-added">
+                                        {ingredients.map((ingredient, idx) => (
+                                            <li key={idx}>
+                                                <button
+                                                    id="x-delete-element"
+                                                    onClick={() =>
+                                                        deleteIngredient(idx)
+                                                    }
+                                                >
+                                                    x
+                                                </button>
+                                                {!updateIngredients && (
+                                                    <>{ingredient}</>
+                                                )}
+                                                {updateIngredients && (
+                                                    <>
+                                                        <input
+                                                            type="text"
+                                                            className="input-edit ingredients-updated"
+                                                            name={`ingredient-${idx}`}
+                                                            ref={
+                                                                ingredientsNewRef
+                                                            }
+                                                            defaultValue={
+                                                                ingredient
+                                                            }
+                                                        ></input>
+                                                    </>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {!updateIngredients && (
+                                        <>
+                                            <button
+                                                className="button-update-recipe"
+                                                onClick={editIngredients}
+                                            >
+                                                edit
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {updateIngredients && (
+                                        <>
+                                            <button
+                                                className="button-update-recipe"
+                                                onClick={handleIngredientsEdit}
+                                            >
+                                                ok
+                                            </button>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </div>
+
+                        <div className="recipe-added-element">
+                            {directions && (
+                                <>
+                                    <h1>DIRECTIONS</h1>
+
+                                    <ul className="direction-added">
+                                        {directions.map((direction, idx) => (
+                                            <li key={idx}>
+                                                <button
+                                                    id="x-delete-element"
+                                                    onClick={() =>
+                                                        deleteDirection(idx)
+                                                    }
+                                                >
+                                                    x
+                                                </button>
+                                                {!updateDirections && (
+                                                    <>{direction}</>
+                                                )}
+                                                {updateDirections && (
+                                                    <>
+                                                        <input
+                                                            type="text"
+                                                            className="input-edit directions-updated"
+                                                            name={`direction-${idx}`}
+                                                            ref={
+                                                                directionsNewRef
+                                                            }
+                                                            defaultValue={
+                                                                direction
+                                                            }
+                                                        ></input>
+                                                    </>
+                                                )}
+                                            </li>
+                                        ))}
+                                    </ul>
+
+                                    {!updateDirections && (
+                                        <>
+                                            <button
+                                                className="button-update-recipe"
+                                                onClick={editDirections}
+                                            >
+                                                edit
+                                            </button>
+                                        </>
+                                    )}
+
+                                    {updateDirections && (
+                                        <>
+                                            <button
+                                                className="button-update-recipe"
+                                                onClick={handleDirectionsEdit}
+                                            >
+                                                ok
+                                            </button>
+                                        </>
+                                    )}
+                                </>
+                            )}
+                        </div>
+                    </>
+                )}
+            </div>
         </>
     );
 }

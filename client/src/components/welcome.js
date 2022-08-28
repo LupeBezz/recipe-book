@@ -14,7 +14,6 @@ import Registration from "./registration";
 function Welcome() {
     return (
         <>
-            <h1>Recipe Book - WELCOME</h1>
             <BrowserRouter>
                 <div>
                     <Route exact path="/">
