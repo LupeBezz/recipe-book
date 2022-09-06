@@ -1,6 +1,6 @@
 # recipe-book
 
-project done during the SPICED academy Full Stack Web Development bootcamp. <br/>
+> project done during the SPICED academy Full Stack Web Development bootcamp. <br/>
 
 Recipe Book is a central location where users can store and organise their favourite recipes. Users can register, login, and filter their recipes. They can prepare menus and generate a grocery list. The insertion of recipes can be done manually or with the help of a scraper supported on some webpages (due to the personal use of recipes in our webpage).
 
