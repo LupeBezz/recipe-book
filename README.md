@@ -1,3 +1,3 @@
 # recipe-book
 
-<img src="public/gifs/01_login.gif">
+<img src="gifs/01_login.gif">
