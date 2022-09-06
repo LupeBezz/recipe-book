@@ -1,4 +1,4 @@
 # recipe-book
 
 # preview
-<img src="/gifs/01_login.gif" />
+![gif showing the login functionality] (/gifs/01_login.gif)
