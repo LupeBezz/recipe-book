@@ -2,11 +2,10 @@
 
 *project done during the SPICED academy Full Stack Web Development bootcamp* <br/>
 
-**overview** 
+**overview** <br/>
 Recipe Book is a central location where users can store and organise their favourite recipes.<br/> They can search and filter them and have some helpful functionalities while cooking.
 
-**functionalities**
-- Registration and Login page with error display
+**functionalities**- Registration and Login page with error display
 - Bcrypt for password protection
 - Recipes are organised in three main categories and displayed alphabetically
 - Filtering through recipes available (depending if they are favourited or vegan)
