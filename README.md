@@ -5,7 +5,7 @@ minimalistic approach with all basic functionalities and error displays
 <img src="client/public/gifs/01_login.gif" width="80vw"/>
 
 **filter through recipes** <br/>
-recipes organised alphabetically, filter favourites & vegan recipes
+recipes organised alphabetically, filter favourites & vegan recipes, preview of each recipe
 <img src="client/public/gifs/02_search.gif" width="80vw"/>
 
 **recipe functionalities** <br/>
