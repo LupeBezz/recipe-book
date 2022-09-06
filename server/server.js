@@ -208,7 +208,7 @@ app.post("/api/recipe-scrape", (req, res) => {
             console.log("recipe: ", recipe);
             // console.log("recipe.name: ", recipe.name);
             // console.log("recipe.ingredients: ", recipe.ingredients);
-            db.insertRecipe(
+            db.scrapeRecipe(
                 req.session.userId,
                 recipe.name,
                 req.body.category,
@@ -217,7 +217,8 @@ app.post("/api/recipe-scrape", (req, res) => {
                 recipe.image,
                 null,
                 false,
-                null
+                null,
+                req.body.url
             )
                 .then((results) => {
                     console.log("success after insertRecipe");

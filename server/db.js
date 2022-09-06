@@ -64,20 +64,18 @@ module.exports.insertRecipe = (
     category,
     ingredients,
     directions,
-    picture,
     servings,
     vegan,
     duration
 ) => {
     return db.query(
-        `INSERT INTO recipes(creator, title, category, ingredients, directions, picture, servings, vegan, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9) RETURNING *`,
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, servings, vegan, duration) VALUES ($1, $2, $3, $4, $5, $6, $7, $8) RETURNING *`,
         [
             id,
             title,
             category,
             ingredients,
             directions,
-            picture || null,
             servings || null,
             vegan,
             duration || null,
@@ -91,6 +89,37 @@ module.exports.insertPictureIntoRecipe = (picture, recipeid) => {
     return db.query(
         `UPDATE recipes SET picture = $1 WHERE id = $2 RETURNING *`,
         [picture, recipeid]
+    );
+};
+
+// scrape RECIPE
+
+module.exports.scrapeRecipe = (
+    id,
+    title,
+    category,
+    ingredients,
+    directions,
+    picture,
+    servings,
+    vegan,
+    duration,
+    url
+) => {
+    return db.query(
+        `INSERT INTO recipes(creator, title, category, ingredients, directions, picture, servings, vegan, duration, url) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING *`,
+        [
+            id,
+            title,
+            category,
+            ingredients,
+            directions,
+            picture || null,
+            servings || null,
+            vegan,
+            duration || null,
+            url,
+        ]
     );
 };
 

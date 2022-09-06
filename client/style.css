@@ -337,6 +337,8 @@
     padding: 0;
 }
 
+/* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - RECIPES */
+
 .recipes-preview {
     width: 40vw;
     position: absolute;
@@ -389,6 +391,11 @@
     margin: 0;
     padding: 0;
     font-size: 1.25vw;
+}
+
+#link-source {
+    color: black;
+    text-decoration: none;
 }
 
 /* - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - DIRECTIONS */

@@ -95,6 +95,21 @@ function Preview(props) {
                                     </span>
                                 </span>
                             )}
+                            {recipe.url && (
+                                <span className="recipes-preview-icons">
+                                    <span className="material-symbols-outlined">
+                                        arrow_forward
+                                    </span>
+                                    <a
+                                        id="link-source"
+                                        className="icons-text"
+                                        href={recipe.url || null}
+                                        target="blank"
+                                    >
+                                        link
+                                    </a>
+                                </span>
+                            )}
                         </div>
                     </>
                 )}
