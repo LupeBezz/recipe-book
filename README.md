@@ -2,7 +2,7 @@
 
 *project done during the SPICED academy Full Stack Web Development bootcamp* <br/>
 
-Recipe Book is a central location where users can store and organise their favourite recipes. Users can register, login, search their recipes and filter through them. They can prepare menus and generate a grocery list. The insertion of recipes can be done manually or with the help of a scraper supported on some webpages.
+Recipe Book is a central location where users can store and organise their favourite recipes. Users can register, login, search their recipes and filter through them. Once a recipe is selected, the user can set a timer if required in the instructions and cross out the steps as they are completed. Recipes can be modified and erased. Users can prepare menus and generate a grocery list. The insertion of recipes can be done manually or with the help of a scraper supported on some webpages.
 
 **register & login page** <br/>
 minimalistic approach with all basic functionalities and error displays
