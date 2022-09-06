@@ -4,7 +4,7 @@
 minimalistic approach with all basic functionalities and error displays
 <img src="client/public/gifs/01_login.gif" width="100vw"/>
 
-**filter through recipes** <br/>
+**filter through recipes** <br/> <br/>
 recipes organised alphabetically, filter favourites & vegan recipes
 <img src="client/public/gifs/02_search.gif" width="100vw"/>
 
