@@ -17,4 +17,4 @@
 
 **new recipe > scrape**
 (recipes in our page are only for personal use)
-<img src="client/public/gifs/06_create_scrape.gif" width="100vw"/>
+<img src="client/public/gifs/06_create_scraper.gif" width="100vw"/>
