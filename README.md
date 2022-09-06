@@ -3,7 +3,7 @@
 *project done during the SPICED academy Full Stack Web Development bootcamp* <br/>
 
 ## overview <br/>
-Recipe Book is a central location where users can store and organise their favourite recipes. They can search and filter them and have some helpful tools while cooking. It has a very minimalistic design and all functionalities are placed as icons on the left handside for easy use
+Recipe Book is a central location where users can store and organise their favourite recipes. They can search and filter them and have some helpful tools while cooking. It has a very minimalistic layout, all functionalities are placed as icons on the left handside for a clean easy-to-use design.
 
 - Registration and Login page with error display
 - Bcrypt for password protection
