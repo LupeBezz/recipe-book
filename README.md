@@ -12,9 +12,9 @@ recipes organised alphabetically, filter favourites & vegan recipes, preview of 
 timer function, update recipe, add to menu, make favourite, cross out steps
 <img src="client/public/gifs/03_recipe.gif" width="80vw"/>
 
-**menu and groceries list** <br/>
+<!--- **menu and groceries list** <br/>
 generate a groceries list with the combined ingredients from all selected recipes
-<img src="client/public/gifs/04_menu.gif" width="80vw"/>
+<img src="client/public/gifs/04_menu.gif" width="80vw"/> --->
 
 **new recipe > manual input** <br/>
 manual input and categorisation of recipes <br/>
