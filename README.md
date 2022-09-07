@@ -39,7 +39,7 @@ timer function, cross out steps
 <kbd><img src="client/public/gifs/03_recipe.gif" width="80vw"/></kbd>
 
 **new recipe > manual input** <br/>
-manual input and categorisation of recipes <br/>
+manual input and categorisation of recipes
 &nbsp;
 
 <kbd><img src="client/public/gifs/05_create_manual.gif" width="80vw"/></kbd>
