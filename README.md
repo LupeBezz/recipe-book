@@ -22,24 +22,30 @@ Note: This website is not yet optimised for small screens, please take a look on
 
 **register & login page** <br/>
 minimalistic approach with all basic functionalities and error displays
-<img src="client/public/gifs/01_login.gif" width="80vw"/>
+&nbsp;
+
+<kbd><img src="client/public/gifs/01_login.gif" width="80vw"/></kbd>
 
 **filter through recipes** <br/>
 recipes organised alphabetically, filters, preview of each recipe
-<img src="client/public/gifs/02_search.gif" width="80vw"/>
+&nbsp;
+
+<kbd><img src="client/public/gifs/02_search.gif" width="80vw"/></kbd>
 
 **recipe functionalities** <br/>
 timer function, cross out steps
-<img src="client/public/gifs/03_recipe.gif" width="80vw"/>
+&nbsp;
 
-<!--- **menu and groceries list** <br/>
-generate a groceries list with the combined ingredients from all selected recipes
-<img src="client/public/gifs/04_menu.gif" width="80vw"/> --->
+<kbd><img src="client/public/gifs/03_recipe.gif" width="80vw"/></kbd>
 
 **new recipe > manual input** <br/>
 manual input and categorisation of recipes <br/>
-<img src="client/public/gifs/05_create_manual.gif" width="80vw"/>
+&nbsp;
+
+<kbd><img src="client/public/gifs/05_create_manual.gif" width="80vw"/></kbd>
 
 **new recipe > scrape** <br/>
 automatic input with a scraper (recipes in our page are for personal use only)
-<img src="client/public/gifs/06_create_scraper.gif" width="80vw"/>
+&nbsp;
+
+<kbd><img src="client/public/gifs/06_create_scraper.gif" width="80vw"/></kbd>
