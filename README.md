@@ -15,6 +15,9 @@ Recipe Book is a central location where users can store and organise their favou
 - Users can prepare menus (by joining some recipes) and generate a grocery list
 - The insertion of recipes can be done manually or via a scraper, supported on some webpages
 
+Note: This website is not yet optimised for small screens, please take a look on a laptop or a bigger screen. <br/>
+
+
 ## previews <br/>
 
 **register & login page** <br/>
