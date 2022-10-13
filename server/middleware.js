@@ -1,19 +1,19 @@
 /* eslint-disable no-unused-vars */
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - middleware
+
+// to work with file and directory paths
 const path = require("path");
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - install multer and uidSafe
-
-// Multer is a node.js middleware for handling multipart/form-data, primarily used for uploading files
-// uidSafe is a node.js middleware for creating cryptographically secure UIDs (unique identifiers) > we use it to create a unique name for each uploaded file
-
+// to handle multipart/form-data > used for file upload
 const multer = require("multer");
+
+// to create cryptographically secure UIDs (unique identifiers) > to give a unique name for each uploaded file
 const uidSafe = require("uid-safe");
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - function to upload files
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - local server upload middleware
 
-// destination is the place where we store the newly updated files > in the uploads folder
-// filename is the name we give to each uploaded file > created with uidSafe
+// function used in server.js to save profile pictures on the local server
 
 const storage = multer.diskStorage({
     destination: path.join(__dirname, "uploads"),

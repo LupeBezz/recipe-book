@@ -1,9 +1,14 @@
 /* eslint-disable no-unused-vars */
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - middleware
+
+// amazon web services
 const aws = require("aws-sdk");
+
+// to work with the file system on the local computer
 const fs = require("fs");
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - secrets stuff
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - secrets middleware
 
 let secrets;
 if (process.env.NODE_ENV == "production") {
@@ -17,20 +22,10 @@ const s3 = new aws.S3({
     secretAccessKey: secrets.AWS_SECRET,
 });
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - upload function that talks to AWS
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - aws upload middleware
 
 exports.upload = (req, res, next) => {
-    // if (!req.file) {
-    //     return res.sendStatus(500);
-    // }
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - check req.file to understand what it is
-
-    console.log("req.file:", req.file);
-
     const { filename, mimetype, size, path } = req.file;
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - putObject method > what is returned is stored in the promise
 
     const promise = s3
         .putObject({
@@ -42,8 +37,6 @@ exports.upload = (req, res, next) => {
             ContentLength: size,
         })
         .promise();
-
-    // - - - - - - - - - - - - - - - - - - - - - - - - - - what returns we store in the promise variable and handle it here:
 
     promise
         .then(() => {

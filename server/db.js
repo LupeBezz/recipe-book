@@ -1,8 +1,6 @@
 /* eslint-disable no-unused-vars */
 
-const bcrypt = require("bcryptjs");
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - local / heroku databases
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - database info
 
 let dbUrl;
 
@@ -19,10 +17,16 @@ if (process.env.NODE_ENV === "production") {
     dbUrl = `postgres:${DB_USER}:${DB_PASSWORD}@${DB_HOST}:${DB_PORT}/${DB_NAME}`;
 }
 
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - middleware
+
+// to hash passwords
+const bcrypt = require("bcryptjs");
+
+// to handle the database
 const spicedPg = require("spiced-pg");
 const db = spicedPg(dbUrl);
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - secrets
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - secrets middleware
 
 let sessionSecret;
 
@@ -32,9 +36,9 @@ if (process.env.NODE_ENV == "production") {
     sessionSecret = require("./secrets.json").SESSION_SECRET;
 }
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - INSERT info on tables
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - database functions
 
-// insert USER
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - INSERT USER
 
 function hashPassword(password) {
     return bcrypt
@@ -56,7 +60,7 @@ module.exports.insertUser = (first, last, email, password) => {
     });
 };
 
-// insert RECIPE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - INSERT RECIPE
 
 module.exports.insertRecipe = (
     id,
@@ -83,7 +87,7 @@ module.exports.insertRecipe = (
     );
 };
 
-// insert PICTURE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - INSERT PICTURE
 
 module.exports.insertPictureIntoRecipe = (picture, recipeid) => {
     return db.query(
@@ -92,7 +96,7 @@ module.exports.insertPictureIntoRecipe = (picture, recipeid) => {
     );
 };
 
-// scrape RECIPE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - SCRAPE RECIPE
 
 module.exports.scrapeRecipe = (
     id,
@@ -123,7 +127,7 @@ module.exports.scrapeRecipe = (
     );
 };
 
-// update RECIPE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - UPDATE RECIPE
 
 module.exports.updateRecipe = (
     title,
@@ -150,13 +154,13 @@ module.exports.updateRecipe = (
     );
 };
 
-// delete RECIPE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - DELETE RECIPE
 
 module.exports.deleteRecipe = (recipeid) => {
     return db.query(`DELETE FROM recipes WHERE id = $1`, [recipeid]);
 };
 
-// set FAVORITE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - SET FAV
 
 module.exports.setFavorite = (recipeid, favornot) => {
     return db.query(`UPDATE recipes SET favorite = $2 WHERE id = $1`, [
@@ -165,7 +169,7 @@ module.exports.setFavorite = (recipeid, favornot) => {
     ]);
 };
 
-// insert MENU
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - INSERT MENU
 
 module.exports.insertIntoMenu = (userid, recipeid) => {
     return db.query(`INSERT INTO menu(creator, recipe_id) VALUES ($1, $2)`, [
@@ -174,21 +178,19 @@ module.exports.insertIntoMenu = (userid, recipeid) => {
     ]);
 };
 
-// delete MENU
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - DELETE MENU
 
 module.exports.deleteMenu = (userid) => {
     return db.query(`DELETE FROM menu WHERE creator = $1`, [userid]);
 };
 
-// delete RECIPE
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - DELETE RECIPE
 
 module.exports.deleteMenuRecipe = (recipeid) => {
     return db.query(`DELETE FROM menu WHERE id = $1`, [recipeid]);
 };
 
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET info from tables
-
-// LOGIN > check USER
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - LOGIN
 
 module.exports.getUserInfo = (email) => {
     return db.query(`SELECT * FROM users WHERE email = $1`, [email]);
@@ -203,19 +205,17 @@ module.exports.updatePassword = (password, email) => {
     });
 };
 
-// LOGIN > check USER
-
 module.exports.getUserInfoById = (id) => {
     return db.query(`SELECT * FROM users WHERE id = $1`, [id]);
 };
 
-// GET ALL RECIPES > from USER
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET ALL RECIPES
 
 module.exports.getUserRecipes = (id) => {
     return db.query(`SELECT * FROM recipes WHERE creator = $1`, [id]);
 };
 
-// GET ALL RECIPES > from USER > same category
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET RECIPES BY CATEGORY
 
 module.exports.getRecipesByCategory = (id, category) => {
     return db.query(
@@ -224,7 +224,7 @@ module.exports.getRecipesByCategory = (id, category) => {
     );
 };
 
-// GET ALL RECIPES > from USER > same category > with FILTERS
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - FILTER RECIPES
 
 module.exports.getRecipesByCategoryFiltered = (
     id,
@@ -256,7 +256,7 @@ module.exports.getRecipeById = (id) => {
     return db.query(`SELECT * FROM recipes WHERE id = $1`, [id]);
 };
 
-// get MENU
+// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - GET MENU
 
 module.exports.getMenu = (userid) => {
     return db.query(
@@ -264,18 +264,3 @@ module.exports.getMenu = (userid) => {
         [userid]
     );
 };
-
-// - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - - for the INGREDIENT SEARCH
-
-// ONE INGREDIENT
-// SELECT * FROM recipes WHERE 'blabla'=ANY(ingredients); // 'value' = ANY (array)
-
-// MORE THAN ONE
-// SELECT * FROM recipes WHERE ingredients @> '{"blabla", "bla"}';
-
-// if not working, then check:
-// https://www.compose.com/articles/take-a-dip-into-postgresql-arrays/
-// -- to create an INDEX (GIN Index) for the ingredients array:
-// CREATE INDEX idx_ingredients ON recipes USING GIN(ingredients);
-// -- to search the recipes which include one specific ingredient:
-// SELECT title FROM recipes WHERE ingredients @> 'blabla';  // @> is "contain"
